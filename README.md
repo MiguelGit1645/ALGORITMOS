@@ -1,6 +1,6 @@
 # Riego inteligente — Valle Alto de Cochabamba
 
-Página web del proyecto, con barra de navegación (Inicio, Fundamentos, Aplicación interactiva, Conclusiones, Quiénes somos) y tema claro/oscuro. Contiene en una sola página:
+Página web del proyecto (fondo oscuro con acentos violeta, tema claro opcional) con barra de navegación: Inicio, Fundamentos, Aplicación interactiva, Conclusiones y Quiénes somos. Contiene en una sola página:
 
 1. Introducción
 2. Definición del problema
@@ -72,7 +72,7 @@ ALGORITMOS/
 │   │   ├── reglasDifusas.js   (variables y reglas)
 │   │   └── planificador.js    (ejecuta las 3 capas)
 │   └── ui/                    ← interfaz
-│       ├── navegacion.js      (barra, menú, tema, lluvia de la portada)
+│       ├── navegacion.js      (barra, menú desplegable y tema claro/oscuro)
 │       ├── documento.js       (figura 1 y tabla de resultados de las conclusiones)
 │       ├── grafo.js, paneles.js, analisis.js, formato.js
 ├── tests/                     ← pruebas de cada algoritmo

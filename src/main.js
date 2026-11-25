@@ -5,7 +5,7 @@ import { dibujarGrafo, textoLeyenda } from './ui/grafo.js';
 import { pintarResumen, pintarEmergencia, pintarTurnos, pintarDetalle } from './ui/paneles.js';
 import { pintarAnalisis } from './ui/analisis.js';
 import { dibujarFiguraPertenencia, pintarTablaResultados } from './ui/documento.js';
-import { iniciarNavegacion, iniciarTema, iniciarLluvia } from './ui/navegacion.js';
+import { iniciarNavegacion, iniciarTema } from './ui/navegacion.js';
 
 const estado = { escenario: 'seca', seleccion: null, resultado: null };
 const $ = (id) => document.getElementById(id);
@@ -26,8 +26,7 @@ function pintarEpocas() {
       dibujarFiguraPertenencia($('figura-pertenencia'));
 pintarTablaResultados($('tabla-resultados'));
 iniciarNavegacion();
-const lluvia = iniciarLluvia($('lluvia'));
-iniciarTema(() => lluvia.redibujar());
+iniciarTema();
 calcular();
     }),
   );
@@ -61,6 +60,5 @@ function calcular() {
 dibujarFiguraPertenencia($('figura-pertenencia'));
 pintarTablaResultados($('tabla-resultados'));
 iniciarNavegacion();
-const lluvia = iniciarLluvia($('lluvia'));
-iniciarTema(() => lluvia.redibujar());
+iniciarTema();
 calcular();

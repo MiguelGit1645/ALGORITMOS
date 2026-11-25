@@ -2,10 +2,12 @@
 
 const GRUPOS = {
   inicio: 'inicio',
+  algoritmos: 'inicio',
   introduccion: 'fundamentos',
   problema: 'fundamentos',
   objetivos: 'fundamentos',
   marco: 'fundamentos',
+  'como-funciona': 'aplicacion',
   aplicacion: 'aplicacion',
   conclusiones: 'conclusiones',
   referencias: 'conclusiones',
@@ -92,69 +94,4 @@ export function iniciarTema(alCambiar) {
     alCambiar?.();
   });
   actualizar();
-}
-
-/** Gotas de lluvia cayendo en diagonal sobre la portada. */
-export function iniciarLluvia(canvas) {
-  const ctx = canvas.getContext('2d');
-  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let gotas = [];
-  let ancho = 0;
-  let alto = 0;
-
-  const color = () => getComputedStyle(document.documentElement).getPropertyValue('--particula').trim() || '#ffffff';
-
-  function redimensionar() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    ancho = canvas.clientWidth;
-    alto = canvas.clientHeight;
-    canvas.width = ancho * dpr;
-    canvas.height = alto * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const cantidad = Math.round((ancho * alto) / 9000);
-    gotas = Array.from({ length: cantidad }, () => ({
-      x: Math.random() * ancho,
-      y: Math.random() * alto,
-      largo: 2 + Math.random() * 6,
-      velocidad: 0.15 + Math.random() * 0.5,
-      alfa: 0.25 + Math.random() * 0.65,
-    }));
-  }
-
-  function dibujar() {
-    ctx.clearRect(0, 0, ancho, alto);
-    ctx.strokeStyle = color();
-    ctx.lineCap = 'round';
-    for (const g of gotas) {
-      ctx.globalAlpha = g.alfa;
-      ctx.lineWidth = g.largo > 6 ? 1.6 : 1.1;
-      ctx.beginPath();
-      ctx.moveTo(g.x, g.y);
-      ctx.lineTo(g.x - g.largo * 0.45, g.y + g.largo);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function animar() {
-    for (const g of gotas) {
-      g.y += g.velocidad;
-      g.x -= g.velocidad * 0.45;
-      if (g.y > alto + 10 || g.x < -10) {
-        g.y = -10;
-        g.x = Math.random() * (ancho + alto * 0.45);
-      }
-    }
-    dibujar();
-    requestAnimationFrame(animar);
-  }
-
-  redimensionar();
-  window.addEventListener('resize', () => {
-    redimensionar();
-    if (quieto) dibujar();
-  });
-  if (quieto) dibujar();
-  else requestAnimationFrame(animar);
-  return { redibujar: dibujar };
 }

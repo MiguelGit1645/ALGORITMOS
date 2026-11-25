@@ -11,17 +11,14 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <!-- ════════════════════ BARRA DE NAVEGACIÓN ════════════════════ -->
+    <!-- ════════════════════ CABECERA ════════════════════ -->
     <header class="nav-principal" id="barra">
       <a class="marca" href="#inicio" aria-label="Riego inteligente, ir al inicio">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.6 4.9-6 8.3-6 11.2a6 6 0 0 0 12 0c0-2.9-2.4-6.3-6-11.2z" /></svg>
-        <span>Riego inteligente</span>
+        <span>Riego<b>.</b>inteligente</span>
       </a>
 
       <nav class="menu" id="menu" aria-label="Principal">
@@ -56,108 +53,195 @@
 
     <!-- ════════════════════ PORTADA ════════════════════ -->
     <section class="hero" id="inicio">
-      <canvas id="lluvia" aria-hidden="true"></canvas>
+      <div class="arco" aria-hidden="true"></div>
       <div class="hero-contenido">
-        <h1>Riego inteligente</h1>
-        <p>
-          Sistema que decide a qué parcelas regar primero y por dónde llevar el agua en una granja del Valle Alto de Cochabamba,
+        <p class="pildora">Proyecto de Análisis de Algoritmos</p>
+        <h1>Riego inteligente.<br />Agua donde más hace falta.</h1>
+        <p class="hero-texto">
+          Un sistema que decide a qué parcelas regar primero y por dónde llevar el agua en una granja del Valle Alto de Cochabamba,
           combinando lógica difusa, Merge Sort, Kruskal y Dijkstra.
         </p>
         <div class="hero-botones">
-          <a class="btn btn-primario" href="#introduccion">
-            Comenzar con fundamentos
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-          </a>
-          <a class="btn btn-secundario" href="#aplicacion">
-            Probar la aplicación
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-          </a>
+          <a class="btn btn-violeta" href="#introduccion">Comenzar con fundamentos</a>
+          <a class="btn btn-borde" href="#aplicacion">Probar la aplicación</a>
         </div>
       </div>
     </section>
 
     <main>
+      <!-- Franja de cifras -->
+      <div class="cifras" id="cifras">
+        <div class="cifra"><strong>12</strong><span>parcelas en la granja</span></div>
+        <div class="cifra"><strong>27</strong><span>canales de riego y drenaje</span></div>
+        <div class="cifra"><strong>4</strong><span>algoritmos implementados</span></div>
+        <div class="cifra"><strong>3</strong><span>épocas del año</span></div>
+        <div class="cifra"><strong>23</strong><span>pruebas automáticas</span></div>
+      </div>
+
+      <!-- Resumen de los algoritmos -->
+      <section class="seccion" id="algoritmos">
+        <header class="encabezado">
+          <h2>Cuatro algoritmos. <span class="acento">Una sola decisión.</span></h2>
+          <p>Cada algoritmo resuelve una parte del problema y le pasa su resultado al siguiente.</p>
+        </header>
+        <div class="rejilla tres">
+          <a class="tarjeta" href="#t-difusa">
+            <span class="icono"><svg viewBox="0 0 24 24"><path d="M3 18c3 0 4-12 9-12s6 12 9 12" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Lógica difusa</h3>
+            <p>Convierte «suelo algo seco» y «hace calor» en una urgencia de 0 a 100 y en la pérdida de cada canal.</p>
+          </a>
+          <a class="tarjeta destacada" href="#t-merge">
+            <span class="icono"><svg viewBox="0 0 24 24"><path d="M4 18h3V9H4zM10.5 18h3V5h-3zM17 18h3v-6h-3z" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Merge Sort</h3>
+            <p>Ordena las parcelas de mayor a menor urgencia y arma los turnos cuando el agua no alcanza.</p>
+          </a>
+          <a class="tarjeta" href="#t-kruskal">
+            <span class="icono"><svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2" /><circle cx="19" cy="6" r="2" /><circle cx="12" cy="18" r="2" /><path d="M7 6h10M6 8l5 8.5" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Kruskal</h3>
+            <p>Elige qué canales habilitar: la red de menor pérdida para regar o la de mayor capacidad para drenar.</p>
+          </a>
+          <a class="tarjeta" href="#t-dijkstra">
+            <span class="icono"><svg viewBox="0 0 24 24"><circle cx="5" cy="18" r="2" /><circle cx="19" cy="6" r="2" /><path d="M7 18h4a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Dijkstra</h3>
+            <p>Encuentra la ruta con menor pérdida hacia una parcela en estado crítico, aunque salga de la red habitual.</p>
+          </a>
+          <a class="tarjeta" href="#t-analisis">
+            <span class="icono"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M7 16c3-1 5-4 6-8M7 16l10-2" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Análisis de complejidad</h3>
+            <p>Notación O de cada capa y comparación medida contra Selección, Inserción y Shell.</p>
+          </a>
+          <a class="tarjeta" href="#aplicacion">
+            <span class="icono"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M8 21h8M12 18v3" /></svg></span>
+            <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
+            <h3>Aplicación interactiva</h3>
+            <p>Elige una época del año y mira cómo cambian los turnos, la red de canales y la ruta de emergencia.</p>
+          </a>
+        </div>
+      </section>
+
       <!-- ════════════════════ 1. INTRODUCCIÓN ════════════════════ -->
-      <section id="introduccion" class="capitulo texto">
-        <h2><span class="num">1</span>Introducción</h2>
-        <p>
-          En Bolivia el agua para riego es escasa y se pierde con facilidad. La mayoría de los cerca de 5.700 sistemas de riego del país son
-          redes de canales tradicionales con pocas obras de regulación, y su eficiencia global se estima entre el 18 % y el 30 %: de cada
-          10 litros que salen de la fuente, menos de 3 llegan al cultivo [3]. A esto se suma la variabilidad climática. En julio de 2026 el
-          Monitor de Sequías del SENAMHI reportaba 17 municipios de Oruro en emergencia por sequía severa a extrema [1], y el mismo
-          servicio estimaba que la probabilidad de un evento El Niño crecería hasta un 82 % hacia fin de año [2].
-        </p>
-        <p>
-          En las comunidades, la decisión de qué parcela regar, cuándo y por qué canal se toma muchas veces por costumbre o por turnos fijos,
-          y cuando varios regantes coinciden en el mismo periodo aparecen conflictos [5]. Sin embargo, esas decisiones son, en el fondo,
-          problemas clásicos de la computación: <strong>clasificar</strong> información imprecisa, <strong>ordenar</strong> por prioridad,
-          <strong>diseñar una red</strong> de costo mínimo y <strong>encontrar el camino</strong> más corto.
-        </p>
-        <p>
-          Este proyecto aplica cuatro algoritmos estudiados en la materia a una granja de 12 parcelas en el Valle Alto de Cochabamba, el
-          departamento con más sistemas de riego del país (1.333 de 5.669) [4]. La página presenta el problema, los fundamentos teóricos de
-          cada algoritmo, una aplicación interactiva que los ejecuta en tres épocas del año y las conclusiones del análisis.
-        </p>
+      <section id="introduccion" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">01</p>
+          <h2>Introducción</h2>
+        </header>
+        <div class="texto">
+          <p>
+            En Bolivia el agua para riego es escasa y se pierde con facilidad. La mayoría de los cerca de 5.700 sistemas de riego del país
+            son redes de canales tradicionales con pocas obras de regulación, y su eficiencia global se estima entre el 18 % y el 30 %: de
+            cada 10 litros que salen de la fuente, menos de 3 llegan al cultivo [3]. A esto se suma la variabilidad climática. En julio de
+            2026 el Monitor de Sequías del SENAMHI reportaba 17 municipios de Oruro en emergencia por sequía severa a extrema [1], y el mismo
+            servicio estimaba que la probabilidad de un evento El Niño crecería hasta un 82 % hacia fin de año [2].
+          </p>
+          <p>
+            En las comunidades, la decisión de qué parcela regar, cuándo y por qué canal se toma muchas veces por costumbre o por turnos
+            fijos, y cuando varios regantes coinciden en el mismo periodo aparecen conflictos [5]. Sin embargo, esas decisiones son, en el
+            fondo, problemas clásicos de la computación: <strong>clasificar</strong> información imprecisa, <strong>ordenar</strong> por
+            prioridad, <strong>diseñar una red</strong> de costo mínimo y <strong>encontrar el camino</strong> más corto.
+          </p>
+          <p>
+            Este proyecto aplica cuatro algoritmos estudiados en la materia a una granja de 12 parcelas en el Valle Alto de Cochabamba, el
+            departamento con más sistemas de riego del país (1.333 de 5.669) [4]. La página presenta el problema, los fundamentos teóricos
+            de cada algoritmo, una aplicación interactiva que los ejecuta en tres épocas del año y las conclusiones del análisis.
+          </p>
+        </div>
       </section>
 
       <!-- ════════════════════ 2. DEFINICIÓN DEL PROBLEMA ════════════════════ -->
-      <section id="problema" class="capitulo texto">
-        <h2><span class="num">2</span>Definición del problema</h2>
-        <p>
-          Una represa entrega un volumen limitado de agua por turno a 12 parcelas con cultivos distintos, conectadas por canales de tierra,
-          mampostería o tubería. Cada época del año cambia la lluvia, la temperatura y la humedad del suelo, y con ellas cambian tanto la
-          necesidad de agua de cada parcela como la cantidad que se pierde en cada canal. El encargado del riego debe responder cuatro
-          preguntas:
-        </p>
-        <ol class="preguntas">
-          <li><strong>¿Cuánta agua necesita cada parcela?</strong> La información disponible es imprecisa: «el suelo está algo seco», «hace bastante calor».</li>
-          <li><strong>¿En qué orden se atienden?</strong> Cuando el agua de un turno no alcanza para todas, hay que priorizar.</li>
-          <li><strong>¿Qué canales se habilitan?</strong> Hay que llegar a todas las parcelas que lo necesitan perdiendo la menor cantidad de agua; en época de lluvias, en cambio, hay que drenar el exceso.</li>
-          <li><strong>¿Por dónde se envía agua a una parcela crítica?</strong> En una emergencia importa la ruta concreta, no la red completa.</li>
-        </ol>
+      <section id="problema" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">02</p>
+          <h2>Definición del <span class="acento">problema</span></h2>
+          <p>
+            Una represa entrega un volumen limitado de agua por turno a 12 parcelas con cultivos distintos, conectadas por canales de
+            tierra, mampostería o tubería. Cada época cambia la lluvia, la temperatura y la humedad del suelo, y con ellas la necesidad de
+            agua de cada parcela y lo que se pierde en cada canal. El encargado del riego debe responder cuatro preguntas.
+          </p>
+        </header>
+        <div class="rejilla cuatro">
+          <article class="tarjeta">
+            <span class="numero">01</span>
+            <h3>¿Cuánta agua necesita cada parcela?</h3>
+            <p>La información es imprecisa: «el suelo está algo seco», «hace bastante calor».</p>
+          </article>
+          <article class="tarjeta">
+            <span class="numero">02</span>
+            <h3>¿En qué orden se atienden?</h3>
+            <p>Cuando el agua de un turno no alcanza para todas, hay que priorizar.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="numero">03</span>
+            <h3>¿Qué canales se habilitan?</h3>
+            <p>Llegar a todas las que lo necesitan perdiendo la menor cantidad de agua; en lluvias, drenar el exceso.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="numero">04</span>
+            <h3>¿Por dónde se envía agua a una parcela crítica?</h3>
+            <p>En una emergencia importa la ruta concreta, no la red completa.</p>
+          </article>
+        </div>
 
-        <h3>Modelo</h3>
-        <p>El campo se representa como un grafo no dirigido y ponderado <var>G</var> = (<var>V</var>, <var>E</var>):</p>
-        <ul class="modelo">
-          <li><var>V</var> = {R, D} ∪ {P1, …, P12}: la represa R, el desagüe al río D y las parcelas.</li>
-          <li><var>E</var>: 27 canales. Cada canal <var>e</var> tiene longitud ℓ(<var>e</var>), revestimiento y capacidad <var>c</var>(<var>e</var>) en L/s.</li>
-          <li>Para cada parcela <var>p</var>, la lógica difusa calcula una urgencia <var>u</var>(<var>p</var>) ∈ [0, 100] y su demanda <var>d</var>(<var>p</var>) = área × <var>u</var>/100 × 450 m³/ha.</li>
-          <li>Para cada canal, la lógica difusa calcula una tasa de pérdida τ(<var>e</var>) en % cada 100 m, y su peso es <var>w</var>(<var>e</var>) = ℓ(<var>e</var>)/100 × τ(<var>e</var>).</li>
-          <li>El agua que debe liberarse para una parcela es <var>d</var>(<var>p</var>) / (1 − pérdida de su ruta).</li>
-        </ul>
-
-        <h3>Supuestos</h3>
-        <ul>
-          <li>Los datos climáticos y de la granja son ilustrativos, elegidos dentro de rangos típicos del valle.</li>
-          <li>Las pérdidas de los tramos se suman. Es una aproximación válida mientras las pérdidas son pequeñas.</li>
-          <li>Los canales se consideran no dirigidos y la represa entrega 1.500 a 1.800 m³ por turno según la época.</li>
-        </ul>
+        <div class="dos-columnas">
+          <div class="panel">
+            <h3>Modelo</h3>
+            <p>El campo se representa como un grafo no dirigido y ponderado <var>G</var> = (<var>V</var>, <var>E</var>):</p>
+            <ul>
+              <li><var>V</var> = {R, D} ∪ {P1, …, P12}: la represa R, el desagüe al río D y las parcelas.</li>
+              <li><var>E</var>: 27 canales con longitud ℓ(<var>e</var>), revestimiento y capacidad <var>c</var>(<var>e</var>) en L/s.</li>
+              <li>Urgencia <var>u</var>(<var>p</var>) ∈ [0, 100] y demanda <var>d</var>(<var>p</var>) = área × <var>u</var>/100 × 450 m³/ha.</li>
+              <li>Tasa de pérdida τ(<var>e</var>) en % cada 100 m y peso <var>w</var>(<var>e</var>) = ℓ(<var>e</var>)/100 × τ(<var>e</var>).</li>
+              <li>Agua a liberar para una parcela: <var>d</var>(<var>p</var>) / (1 − pérdida de su ruta).</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Supuestos</h3>
+            <ul>
+              <li>Los datos climáticos y de la granja son ilustrativos, dentro de rangos típicos del valle.</li>
+              <li>Las pérdidas de los tramos se suman; es una aproximación válida mientras son pequeñas.</li>
+              <li>Los canales son no dirigidos y la represa entrega 1.500 a 1.800 m³ por turno según la época.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <!-- ════════════════════ 3. OBJETIVOS ════════════════════ -->
-      <section id="objetivos" class="capitulo texto">
-        <h2><span class="num">3</span>Objetivos</h2>
-        <h3>Objetivo general</h3>
-        <p class="objetivo-general">
-          Aplicar los conocimientos de Análisis de Algoritmos mediante un sistema que planifique el riego de una granja del Valle Alto de
-          Cochabamba según la época del año, combinando lógica difusa, Merge Sort, Kruskal y Dijkstra, y analizando la complejidad y el
-          comportamiento de cada algoritmo.
-        </p>
-        <h3>Objetivos específicos</h3>
-        <ul>
-          <li>Modelar con lógica difusa tipo Mamdani la urgencia de riego de cada parcela y la pérdida de agua de cada canal a partir de variables climáticas imprecisas.</li>
-          <li>Ordenar las parcelas por urgencia con Merge Sort y repartir el agua disponible en turnos.</li>
-          <li>Obtener con Kruskal la red de canales de menor pérdida para el riego y la de mayor capacidad para el drenaje.</li>
-          <li>Calcular con Dijkstra la ruta óptima hacia una parcela crítica y compararla con la ruta que ofrece la red de Kruskal.</li>
-          <li>Determinar la complejidad teórica de cada algoritmo y contrastarla con mediciones empíricas.</li>
-        </ul>
+      <section id="objetivos" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">03</p>
+          <h2>Objetivos</h2>
+        </header>
+        <div class="objetivo-general">
+          <p class="etiqueta-general">Objetivo general</p>
+          <p>
+            Aplicar los conocimientos de Análisis de Algoritmos mediante un sistema que planifique el riego de una granja del Valle Alto de
+            Cochabamba según la época del año, combinando lógica difusa, Merge Sort, Kruskal y Dijkstra, y analizando la complejidad y el
+            comportamiento de cada algoritmo.
+          </p>
+        </div>
+        <h3 class="subtitulo-centro">Objetivos específicos</h3>
+        <div class="rejilla cinco">
+          <article class="tarjeta objetivo"><h3>Modelar</h3><p>la urgencia de riego y la pérdida de cada canal con lógica difusa Mamdani.</p></article>
+          <article class="tarjeta objetivo"><h3>Ordenar</h3><p>las parcelas por urgencia con Merge Sort y repartir el agua en turnos.</p></article>
+          <article class="tarjeta objetivo"><h3>Diseñar</h3><p>con Kruskal la red de menor pérdida para regar y la de mayor capacidad para drenar.</p></article>
+          <article class="tarjeta objetivo"><h3>Calcular</h3><p>con Dijkstra la ruta óptima a una parcela crítica y compararla con la red de Kruskal.</p></article>
+          <article class="tarjeta objetivo"><h3>Analizar</h3><p>la complejidad teórica de cada algoritmo y contrastarla con mediciones.</p></article>
+        </div>
       </section>
 
       <!-- ════════════════════ 4. MARCO TEÓRICO ════════════════════ -->
-      <section id="marco" class="capitulo texto">
-        <h2><span class="num">4</span>Marco teórico</h2>
+      <section id="marco" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">04</p>
+          <h2>Marco <span class="acento">teórico</span></h2>
+          <p>Los conceptos que sostienen cada capa del sistema.</p>
+        </header>
 
-        <article class="concepto">
+        <article class="panel concepto" id="t-analisis">
           <h3>4.1 Análisis de algoritmos</h3>
           <p>
             Analizar un algoritmo es estimar los recursos que consume, principalmente tiempo y memoria, en función del tamaño de la
@@ -172,7 +256,7 @@
           </p>
         </article>
 
-        <article class="concepto">
+        <article class="panel concepto" id="t-difusa">
           <h3>4.2 Lógica difusa</h3>
           <p>
             En la lógica clásica un elemento pertenece o no a un conjunto. Zadeh propuso los <strong>conjuntos difusos</strong>, donde la
@@ -182,7 +266,7 @@
           </p>
           <figure class="figura">
             <svg id="figura-pertenencia" viewBox="0 0 640 210" role="img" aria-label="Funciones de pertenencia de la humedad del suelo"></svg>
-            <figcaption>Figura 1. Funciones de pertenencia de la variable «humedad del suelo» usada en el proyecto (trapezoidal, triangular, trapezoidal).</figcaption>
+            <figcaption>Figura 1. Funciones de pertenencia de la variable «humedad del suelo» usada en el proyecto.</figcaption>
           </figure>
           <p>Las funciones más usadas son la triangular y la trapezoidal:</p>
           <p class="formula">
@@ -199,7 +283,7 @@
             <li><strong>Evaluación de reglas:</strong> la fuerza de una regla es el mínimo de los grados de sus condiciones (operador Y).</li>
             <li><strong>Implicación:</strong> el conjunto de salida de cada regla se recorta a la altura de su fuerza.</li>
             <li><strong>Agregación:</strong> los conjuntos recortados se combinan con el máximo.</li>
-            <li><strong>Defuzzificación:</strong> se obtiene un número con el centroide del área agregada: <span class="formula-linea"><var>y</var>* = Σ <var>x</var>·μ(<var>x</var>) / Σ μ(<var>x</var>)</span>.</li>
+            <li><strong>Defuzzificación:</strong> se obtiene un número con el centroide: <span class="formula-linea"><var>y</var>* = Σ <var>x</var>·μ(<var>x</var>) / Σ μ(<var>x</var>)</span>.</li>
           </ol>
           <p>
             <strong>Complejidad.</strong> Con <var>r</var> reglas de hasta <var>k</var> condiciones y una salida muestreada en
@@ -209,7 +293,7 @@
           </p>
         </article>
 
-        <article class="concepto">
+        <article class="panel concepto" id="t-merge">
           <h3>4.3 Ordenamiento: Merge Sort</h3>
           <p>
             Ordenar es reorganizar <var>n</var> elementos según una clave. Merge Sort aplica la estrategia <strong>divide y vencerás</strong>:
@@ -241,13 +325,13 @@ MEZCLAR(I, D)
                 <tr><td>Selección</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr>
                 <tr><td>Inserción</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Sí</td></tr>
                 <tr><td>Shell (brechas n/2ᵏ)</td><td>O(n log n)</td><td>depende de las brechas</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr>
-                <tr class="destacada"><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Sí</td></tr>
+                <tr class="fila-destacada"><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Sí</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <article class="concepto">
+        <article class="panel concepto" id="t-kruskal">
           <h3>4.4 Grafos y árbol de expansión: Kruskal</h3>
           <p>
             Un <strong>grafo</strong> <var>G</var> = (<var>V</var>, <var>E</var>) es un conjunto de vértices unidos por aristas; si las aristas
@@ -281,7 +365,7 @@ MEZCLAR(I, D)
           </p>
         </article>
 
-        <article class="concepto">
+        <article class="panel concepto" id="t-dijkstra">
           <h3>4.5 Camino más corto: Dijkstra</h3>
           <p>
             El problema del camino más corto desde un origen <var>s</var> busca, para cada vértice <var>v</var>, la ruta de menor peso total
@@ -300,9 +384,7 @@ MEZCLAR(I, D)
         dist[v] ← dist[u] + w(u, v);  previo[v] ← u
         INSERTAR(Q, (dist[v], v))
   devolver dist, previo</code></pre>
-          <p>
-            <strong>Complejidad:</strong> O((<var>V</var> + <var>E</var>) log <var>V</var>) con un montículo binario.
-          </p>
+          <p><strong>Complejidad:</strong> O((<var>V</var> + <var>E</var>) log <var>V</var>) con un montículo binario.</p>
           <p class="aviso">
             <strong>Kruskal y Dijkstra optimizan cosas distintas.</strong> Kruskal minimiza el peso <em>total</em> de la red; Dijkstra minimiza
             la distancia <em>desde un origen</em>. La ruta entre la represa y una parcela dentro del MST no siempre es la más corta. En este
@@ -311,19 +393,31 @@ MEZCLAR(I, D)
         </article>
       </section>
 
+      <!-- ════════════════════ FRANJA VIOLETA: CÓMO FUNCIONA ════════════════════ -->
+    <section class="franja" id="como-funciona">
+      <div class="franja-interior">
+        <header class="encabezado">
+          <h2>Cuatro capas. <span class="acento-claro">Un solo recorrido.</span></h2>
+          <p>Así fluye la información cada vez que eliges una época del año en la aplicación.</p>
+        </header>
+        <ol class="pasos-franja">
+          <li><span class="numero">01</span><h3>Diagnóstico difuso</h3><p>17 reglas calculan la urgencia de cada parcela y la pérdida de cada canal.</p></li>
+          <li><span class="numero">02</span><h3>Turnos con Merge Sort</h3><p>Las parcelas se ordenan por urgencia y se riegan hasta llenar cada turno.</p></li>
+          <li><span class="numero">03</span><h3>Red con Kruskal</h3><p>Se habilita la red mínima (riego) o máxima (drenaje) y se podan ramas inútiles.</p></li>
+          <li><span class="numero">04</span><h3>Emergencia con Dijkstra</h3><p>Se busca la mejor ruta a la parcela crítica en todo el campo.</p></li>
+        </ol>
+      </div>
+    </section>
+
       <!-- ════════════════════ 5. APLICACIÓN ════════════════════ -->
-      <section id="aplicacion" class="capitulo">
-        <div class="texto">
-          <h2><span class="num">5</span>Aplicación</h2>
-          <p>
-            La aplicación ejecuta los cuatro algoritmos en orden sobre la granja. Elige una época: la lógica difusa calcula urgencias y
-            pérdidas, Merge Sort ordena las parcelas y arma los turnos, Kruskal habilita la red y Dijkstra marca la ruta de emergencia.
-            Toca cualquier parcela para ver cómo razonó la lógica difusa.
-          </p>
-        </div>
+      <section id="aplicacion" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">05</p>
+          <h2>Aplicación <span class="acento">interactiva</span></h2>
+          <p>Elige una época del año. Toca cualquier parcela del mapa o de la tabla para ver cómo razonó la lógica difusa.</p>
+        </header>
 
         <div class="app-cabecera">
-          <h3>Época del año</h3>
           <nav class="epocas" id="epocas" aria-label="Época del año"></nav>
         </div>
 
@@ -352,56 +446,59 @@ MEZCLAR(I, D)
       </section>
 
       <!-- ════════════════════ 6. CONCLUSIONES ════════════════════ -->
-      <section id="conclusiones" class="capitulo texto">
-        <h2><span class="num">6</span>Conclusiones</h2>
+      <section id="conclusiones" class="seccion">
+        <header class="encabezado">
+          <p class="capitulo-num">06</p>
+          <h2>Resultados reales. <span class="acento">Conclusiones.</span></h2>
+          <p>Lo que mostró el sistema al ejecutarse en las tres épocas del año.</p>
+        </header>
         <div class="tabla-scroll">
           <table class="tabla compacta" id="tabla-resultados">
             <caption>Tabla 2. Resultados de la aplicación en las tres épocas (calculados en vivo).</caption>
           </table>
         </div>
-        <ol class="conclusiones">
-          <li>
-            <strong>La lógica difusa permitió decidir sin datos históricos.</strong> Con 17 reglas escritas en lenguaje natural, el sistema
-            distingue parcelas que, con un umbral rígido, recibirían el mismo trato. Un mismo motor Mamdani resolvió dos problemas distintos
-            (urgencia y pérdida) cambiando solo las variables y las reglas. Es la capa más costosa, O(<var>n</var>·<var>r</var>·<var>m</var>),
-            porque evalúa 101 puntos de salida por cada regla.
-          </li>
-          <li>
-            <strong>La notación O no basta para elegir un algoritmo.</strong> En la comparación empírica, Merge Sort hizo menos comparaciones
-            que Selección, Inserción y Shell con datos aleatorios, como predice la teoría. Pero en tiempo, Shell puede igualarlo porque Merge
-            Sort reserva memoria al mezclar, e Inserción compara menos cuando la lista casi no cambió desde el turno anterior. Se eligió Merge
-            Sort por su garantía de O(<var>n</var> log <var>n</var>) en cualquier caso y por ser estable, lo que hace justo el desempate
-            entre parcelas con igual urgencia.
-          </li>
-          <li>
-            <strong>Un mismo algoritmo sirvió para dos estrategias.</strong> Kruskal mínimo sobre la pérdida produjo la red de riego en las
-            épocas seca y de transición, y Kruskal máximo sobre la capacidad produjo la red de drenaje en la época de lluvias. La poda
-            posterior quitó los canales que solo llevaban a parcelas sin necesidad de agua.
-          </li>
-          <li>
-            <strong>Kruskal y Dijkstra no son intercambiables.</strong> En la época seca la red de Kruskal ya contenía la mejor ruta hacia la
-            parcela crítica, pero en las épocas de transición y de lluvias Dijkstra encontró rutas mejores fuera del árbol (ver Tabla 2). Esto
-            confirma en la práctica que un árbol de costo total mínimo no es un árbol de caminos más cortos.
-          </li>
-          <li>
-            <strong>El mayor problema es la pérdida en los canales.</strong> En la época seca una parte importante del agua liberada se pierde
-            en el camino, sobre todo en los canales de tierra. El sistema no solo reparte mejor el agua: también señala qué tramos convendría
-            revestir primero.
-          </li>
-        </ol>
-
-        <h3>Limitaciones y trabajo futuro</h3>
-        <ul>
-          <li>Usar datos climáticos reales del SENAMHI y calibrar las reglas con agrónomos y regantes de la zona.</li>
-          <li>Modelar la pérdida de forma multiplicativa con pesos −ln(1 − <var>p</var>), que suman exactamente lo que se multiplica.</li>
-          <li>Incorporar Johnson para tramos que <em>ganan</em> agua por escorrentía (pesos negativos), el método de transporte (esquina noroeste) para varias fuentes y el algoritmo de asignación para distribuir cuadrillas.</li>
-        </ul>
+        <div class="rejilla tres conclusiones">
+          <article class="tarjeta">
+            <span class="etiqueta-tarjeta">Lógica difusa</span>
+            <h3>Decidir sin datos históricos</h3>
+            <p>Con 17 reglas en lenguaje natural, el sistema distingue parcelas que un umbral rígido trataría igual. El mismo motor Mamdani resolvió urgencia y pérdida cambiando solo variables y reglas. Es la capa más costosa, O(<var>n</var>·<var>r</var>·<var>m</var>).</p>
+          </article>
+          <article class="tarjeta">
+            <span class="etiqueta-tarjeta">Merge Sort</span>
+            <h3>La notación O no basta para elegir</h3>
+            <p>Merge Sort hizo menos comparaciones con datos aleatorios, como predice la teoría, pero Shell puede igualarlo en tiempo porque Merge Sort reserva memoria al mezclar, e Inserción compara menos si la lista casi no cambió. Se eligió Merge Sort por su garantía O(<var>n</var> log <var>n</var>) y su estabilidad.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="etiqueta-tarjeta">Kruskal</span>
+            <h3>Un algoritmo, dos estrategias</h3>
+            <p>Kruskal mínimo sobre la pérdida produjo la red de riego; Kruskal máximo sobre la capacidad, la red de drenaje en lluvias. La poda quitó los canales que solo llevaban a parcelas sin necesidad de agua.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="etiqueta-tarjeta">Kruskal y Dijkstra</span>
+            <h3>No son intercambiables</h3>
+            <p>En la época seca la red de Kruskal ya contenía la mejor ruta, pero en transición y lluvias Dijkstra encontró rutas mejores fuera del árbol (Tabla 2): un árbol de costo total mínimo no es un árbol de caminos más cortos.</p>
+          </article>
+          <article class="tarjeta">
+            <span class="etiqueta-tarjeta">El problema real</span>
+            <h3>El agua se pierde en el camino</h3>
+            <p>En la época seca una parte importante del agua liberada se pierde, sobre todo en canales de tierra. El sistema también señala qué tramos convendría revestir primero.</p>
+          </article>
+          <article class="tarjeta tarjeta-futuro">
+            <span class="etiqueta-tarjeta">Trabajo futuro</span>
+            <h3>Limitaciones y siguientes pasos</h3>
+            <ul>
+              <li>Datos reales del SENAMHI y reglas calibradas con agrónomos.</li>
+              <li>Pérdida multiplicativa con pesos −ln(1 − <var>p</var>).</li>
+              <li>Johnson para tramos con escorrentía, método de transporte para varias fuentes y asignación de cuadrillas.</li>
+            </ul>
+          </article>
+        </div>
       </section>
 
       <!-- ════════════════════ REFERENCIAS ════════════════════ -->
-      <section id="referencias" class="capitulo texto">
-        <h2>Referencias</h2>
-        <ol class="referencias">
+      <section id="referencias" class="seccion">
+        <header class="encabezado"><h2>Referencias</h2></header>
+        <ol class="referencias panel">
           <li>Mongabay Latam (2026). <em>Bolivia: declaran emergencia por sequía extrema y pronostican incendios en la Amazonía.</em> <a href="https://es.mongabay.com/2026/08/bolivia-declaran-emergencia-sequia-extrema-pronostican-incendios-amazonia/">es.mongabay.com</a></li>
           <li>SENAMHI Bolivia (2026). <em>Boletín de predicción climática, trimestre abril–mayo–junio 2026.</em> <a href="https://senamhi.gob.bo/meteorologia/boletines/tendencias/2026/04_BOLETIN_PREDICCION_AMJ_2026.pdf">senamhi.gob.bo</a></li>
           <li>Riego en Bolivia. Wikipedia en español (copia en es-academic). <a href="https://es-academic.com/dic.nsf/eswiki/1011579">es-academic.com</a></li>
@@ -414,19 +511,20 @@ MEZCLAR(I, D)
           <li>Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. <em>Numerische Mathematik</em>, 1, 269–271.</li>
         </ol>
       </section>
+
       <!-- ════════════════════ QUIÉNES SOMOS ════════════════════ -->
-      <section id="quienes" class="capitulo">
-        <div class="texto">
-          <h2>Quiénes somos</h2>
+      <section id="quienes" class="seccion">
+        <header class="encabezado">
+          <h2>Quiénes <span class="acento">somos</span></h2>
           <p>
             Este proyecto se realizó para aplicar los conocimientos adquiridos en la materia Análisis de Algoritmos: conceptualizar un
             problema real, elegir los algoritmos adecuados, implementarlos y analizar su complejidad.
           </p>
-        </div>
-        <div class="equipo">
-          <article class="persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
-          <article class="persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
-          <article class="persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
+        </header>
+        <div class="rejilla tres">
+          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
+          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
+          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
         </div>
         <dl class="ficha">
           <div><dt>Materia</dt><dd>Análisis de Algoritmos</dd></div>
@@ -437,7 +535,8 @@ MEZCLAR(I, D)
     </main>
 
     <footer class="pie">
-      Proyecto de Análisis de Algoritmos, 2026. Los datos de la granja y del clima son ilustrativos.
+      <a class="marca" href="#inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.6 4.9-6 8.3-6 11.2a6 6 0 0 0 12 0c0-2.9-2.4-6.3-6-11.2z" /></svg><span>Riego<b>.</b>inteligente</span></a>
+      <p>Proyecto de Análisis de Algoritmos, 2026. Los datos de la granja y del clima son ilustrativos.</p>
     </footer>
 
     <script type="module" src="/src/main.js"></script>
