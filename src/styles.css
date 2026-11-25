@@ -715,27 +715,25 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 5r
 .pg-nodo.objetivo circle { stroke: #22c1d6; stroke-width: 4; }
 .pg-nodo.origen circle, .pg-nodo.destino circle { stroke: #10b981; stroke-width: 4; }
 
-/* Pinos de Merge Sort */
+/* Columnas de Merge Sort */
 .pz-pista { padding: 1.5rem 1rem 0.5rem; }
-.pz-pinos { position: relative; height: 290px; }
-.pino { position: absolute; bottom: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: left 0.45s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.25s; }
-.pino svg { width: min(42px, 70%); transition: height 0.3s, filter 0.25s, transform 0.25s; overflow: visible; }
-.pino-cuerpo { fill: #f6f3ff; stroke: rgba(0, 0, 0, 0.25); stroke-width: 1; }
-.pino-franja { fill: #e0465f; }
-.pino-valor { font-size: 0.78rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 0.25rem; }
-.pino-etiqueta { font-size: 0.74rem; color: var(--tinta-2); margin-top: 0.35rem; font-weight: 600; }
-.pino.atenuado { opacity: 0.35; }
-.pino.rango-izq svg { filter: drop-shadow(0 0 6px rgba(142, 108, 255, 0.9)); }
-.pino.rango-izq .pino-franja { fill: #8e6cff; }
-.pino.rango-der svg { filter: drop-shadow(0 0 6px rgba(79, 163, 240, 0.9)); }
-.pino.rango-der .pino-franja { fill: #4fa3f0; }
-.pino.compara svg { transform: translateY(-10px); filter: drop-shadow(0 0 10px rgba(240, 164, 41, 1)); }
-.pino.compara .pino-franja { fill: #f0a429; }
-.pino.gana svg { transform: translateY(-10px); filter: drop-shadow(0 0 10px rgba(16, 185, 129, 1)); }
-.pino.gana .pino-franja { fill: #10b981; }
-.pino.mezcla .pino-franja { fill: #4fa3f0; }
-.pino.final .pino-franja { fill: #10b981; }
-@media (prefers-reduced-motion: reduce) { .pino, .pino svg { transition: none; } }
+.pz-columnas { position: relative; height: 290px; }
+.col { position: absolute; bottom: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0 3px; transition: left 0.45s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.25s; }
+.col-barra {
+  width: 100%; max-width: 46px; border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, #6a6590, #45405f);
+  transition: height 0.3s, background 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.col-valor { font-size: 0.78rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 0.25rem; }
+.col-etiqueta { font-size: 0.74rem; color: var(--tinta-2); margin-top: 0.35rem; font-weight: 600; }
+.col.atenuado { opacity: 0.3; }
+:root[data-tema='claro'] .col-barra { background: linear-gradient(180deg, #cdc8e2, #aba4c8); }
+.col.rango-izq .col-barra { background: linear-gradient(180deg, #b7a4ff, #8e6cff); box-shadow: 0 0 12px rgba(142, 108, 255, 0.6); }
+.col.rango-der .col-barra { background: linear-gradient(180deg, #8cc4f7, #4fa3f0); box-shadow: 0 0 12px rgba(79, 163, 240, 0.6); }
+.col.compara .col-barra { background: #f0a429; box-shadow: 0 0 14px rgba(240, 164, 41, 0.8); transform: translateY(-8px); }
+.col.gana .col-barra { background: #10b981; box-shadow: 0 0 14px rgba(16, 185, 129, 0.8); transform: translateY(-8px); }
+.col.mezcla .col-barra { background: linear-gradient(180deg, #8cc4f7, #4fa3f0); }
+.col.final .col-barra { background: linear-gradient(180deg, #4ade9c, #10b981); }
+@media (prefers-reduced-motion: reduce) { .col, .col-barra { transition: none; } }
 
 /* Lógica difusa: diagrama tipo Fuzzy Logic Designer */
 .fz-diagrama { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.2rem 1rem; overflow-x: auto; }
@@ -768,8 +766,9 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 5r
   .pz-pestana .icono { display: none; }
   .pz-btn span { display: none; }
   .pz-btn { padding: 0.55rem 0.65rem; }
-  .pz-pinos { height: 220px; }
-  .pino-valor { font-size: 0.62rem; }
-  .pino-etiqueta { font-size: 0.6rem; }
+  .pz-columnas { height: 220px; }
+  .col { padding: 0 1px; }
+  .col-valor { font-size: 0.6rem; }
+  .col-etiqueta { font-size: 0.6rem; }
 }
 [hidden] { display: none !important; }

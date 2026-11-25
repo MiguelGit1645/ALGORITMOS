@@ -3,9 +3,6 @@ import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
 import { cabeceraPizarra, pintarContadores } from './comun.js';
 
-// Silueta de pino de boliche, como en la pizarra de ordenamiento de Graphix
-const PINO = 'M20 0C26 0 28 5 28 10C28 16 24 19 23.5 25C23 31 34 40 36 55C38 70 35 85 31 100H9C5 85 2 70 4 55C6 40 17 31 16.5 25C16 19 12 16 12 10C12 5 14 0 20 0Z';
-
 /**
  * Pizarra de Merge Sort: ordena las urgencias de las parcelas con el mismo
  * mergeSort del proyecto y muestra cada división, comparación y mezcla.
@@ -22,7 +19,7 @@ export function crearPizarraMerge(contenedor) {
     </div>
     <div data-reproductor></div>
     <div class="pz-cuerpo pz-cuerpo-ancho">
-      <div class="pz-lienzo pz-pista"><div class="pz-pinos" data-pinos></div></div>
+      <div class="pz-lienzo pz-pista"><div class="pz-columnas" data-columnas></div></div>
       <p class="pz-paso" data-paso aria-live="polite"></p>
       <ul class="pz-leyenda">
         <li><i class="lg rango"></i>Sublista en proceso</li><li><i class="lg compara"></i>Comparando</li>
@@ -30,7 +27,7 @@ export function crearPizarraMerge(contenedor) {
       </ul>
     </div>`;
 
-  const pinos = contenedor.querySelector('[data-pinos]');
+  const columnas = contenedor.querySelector('[data-columnas]');
   const texto = contenedor.querySelector('[data-paso]');
   const selDatos = contenedor.querySelector('[data-datos]');
   const selOrden = contenedor.querySelector('[data-orden]');
@@ -85,27 +82,27 @@ export function crearPizarraMerge(contenedor) {
     const n = paso.arreglo.length;
     const hueco = 100 / n;
 
-    // Los pinos se reutilizan por id para que se deslicen a su nueva posición
-    const existentes = new Map([...pinos.children].map((el) => [el.dataset.id, el]));
+    // Las columnas se reutilizan por id para que se deslicen a su nueva posición
+    const existentes = new Map([...columnas.children].map((el) => [el.dataset.id, el]));
     const vistos = new Set();
     paso.arreglo.forEach((d, pos) => {
       let el = existentes.get(d.id);
       if (!el) {
         el = document.createElement('div');
-        el.className = 'pino';
+        el.className = 'col';
         el.dataset.id = d.id;
-        el.innerHTML = `<span class="pino-valor"></span><svg viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true"><path d="${PINO}" class="pino-cuerpo"/><rect x="0" y="26" width="40" height="4" class="pino-franja"/><rect x="0" y="33" width="40" height="4" class="pino-franja"/></svg><span class="pino-etiqueta"></span>`;
-        pinos.appendChild(el);
+        el.innerHTML = `<span class="col-valor"></span><span class="col-barra"></span><span class="col-etiqueta"></span>`;
+        columnas.appendChild(el);
       }
       vistos.add(d.id);
       el.style.left = `${pos * hueco}%`;
       el.style.width = `${hueco}%`;
-      el.querySelector('svg').style.height = `${30 + (d.valor / maximo) * 70}%`;
-      el.querySelector('.pino-valor').textContent = num(d.valor, d.valor % 1 ? 1 : 0);
-      el.querySelector('.pino-etiqueta').textContent = d.etiqueta;
+      el.querySelector('.col-barra').style.height = `${8 + (d.valor / maximo) * 92}%`;
+      el.querySelector('.col-valor').textContent = num(d.valor, d.valor % 1 ? 1 : 0);
+      el.querySelector('.col-etiqueta').textContent = d.etiqueta;
 
       const enRango = (r) => r && pos >= r[0] && pos < r[1];
-      el.className = 'pino';
+      el.className = 'col';
       if (paso.rango) el.classList.add(enRango(paso.rango) ? (pos < paso.medio ? 'rango-izq' : 'rango-der') : 'atenuado');
       if (paso.comparando?.includes(d.id)) el.classList.add(paso.gana === d.id ? 'gana' : 'compara');
       if (enRango(paso.mezclado)) el.classList.add('mezcla');
@@ -122,14 +119,14 @@ export function crearPizarraMerge(contenedor) {
     ]);
   }
 
-  selDatos.addEventListener('change', () => { pinos.innerHTML = ''; preparar(); });
+  selDatos.addEventListener('change', () => { columnas.innerHTML = ''; preparar(); });
   selOrden.addEventListener('change', preparar);
-  btnAleatorio.addEventListener('click', () => { pinos.innerHTML = ''; preparar(); });
+  btnAleatorio.addEventListener('click', () => { columnas.innerHTML = ''; preparar(); });
 
   return {
     actualizar(nuevo) {
       resultado = nuevo;
-      if (selDatos.value === 'granja') pinos.innerHTML = '';
+      if (selDatos.value === 'granja') columnas.innerHTML = '';
       preparar();
     },
     detener: () => reproductor.detener(),
