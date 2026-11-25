@@ -4,6 +4,8 @@ import { ESCENARIOS } from './sistema/granja.js';
 import { dibujarGrafo, textoLeyenda } from './ui/grafo.js';
 import { pintarResumen, pintarEmergencia, pintarTurnos, pintarDetalle } from './ui/paneles.js';
 import { pintarAnalisis } from './ui/analisis.js';
+import { dibujarFiguraPertenencia, pintarTablaResultados } from './ui/documento.js';
+import { iniciarNavegacion, iniciarTema, iniciarLluvia } from './ui/navegacion.js';
 
 const estado = { escenario: 'seca', seleccion: null, resultado: null };
 const $ = (id) => document.getElementById(id);
@@ -21,7 +23,12 @@ function pintarEpocas() {
     b.addEventListener('click', () => {
       estado.escenario = b.dataset.id;
       estado.seleccion = null;
-      calcular();
+      dibujarFiguraPertenencia($('figura-pertenencia'));
+pintarTablaResultados($('tabla-resultados'));
+iniciarNavegacion();
+const lluvia = iniciarLluvia($('lluvia'));
+iniciarTema(() => lluvia.redibujar());
+calcular();
     }),
   );
 }
@@ -51,4 +58,9 @@ function calcular() {
   pintarVista();
 }
 
+dibujarFiguraPertenencia($('figura-pertenencia'));
+pintarTablaResultados($('tabla-resultados'));
+iniciarNavegacion();
+const lluvia = iniciarLluvia($('lluvia'));
+iniciarTema(() => lluvia.redibujar());
 calcular();

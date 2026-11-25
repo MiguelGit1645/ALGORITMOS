@@ -1,5 +1,16 @@
 # Riego inteligente — Valle Alto de Cochabamba
 
+Página web del proyecto, con barra de navegación (Inicio, Fundamentos, Aplicación interactiva, Conclusiones, Quiénes somos) y tema claro/oscuro. Contiene en una sola página:
+
+1. Introducción
+2. Definición del problema
+3. Objetivos (general y específicos)
+4. Marco teórico (análisis de algoritmos, lógica difusa, Merge Sort, Kruskal, Dijkstra)
+5. Aplicación interactiva
+6. Conclusiones, referencias y quiénes somos
+
+> Para completar: nombres de los integrantes y del docente en `index.html` (sección `quienes`).
+
 Proyecto de **Análisis de Algoritmos**. Sistema que, según la época del año, decide **a qué parcelas regar primero** y **por qué canales llevar el agua** con la menor pérdida posible.
 
 Combina cuatro algoritmos implementados desde cero (sin librerías):
@@ -61,6 +72,9 @@ ALGORITMOS/
 │   │   ├── reglasDifusas.js   (variables y reglas)
 │   │   └── planificador.js    (ejecuta las 3 capas)
 │   └── ui/                    ← interfaz
+│       ├── navegacion.js      (barra, menú, tema, lluvia de la portada)
+│       ├── documento.js       (figura 1 y tabla de resultados de las conclusiones)
+│       ├── grafo.js, paneles.js, analisis.js, formato.js
 ├── tests/                     ← pruebas de cada algoritmo
 └── matlab/sistema_riego.m     ← los mismos sistemas difusos para MATLAB
 ```

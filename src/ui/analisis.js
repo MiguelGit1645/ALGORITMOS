@@ -61,7 +61,7 @@ export function pintarAnalisis(contenedor, r) {
   const t = r.tiempos;
   contenedor.innerHTML = `
     <div class="bloque-cabecera">
-      <h2>Análisis de los algoritmos</h2>
+      <h3 class="h-bloque">Análisis de los algoritmos</h3>
       <p>Complejidad teórica de cada capa y tiempo medido en este navegador para la granja actual.</p>
     </div>
     <table class="tabla compacta complejidad">
@@ -75,7 +75,7 @@ export function pintarAnalisis(contenedor, r) {
     </table>
     <p class="nota">Con solo ${r.parcelas.length} parcelas los tiempos son muy pequeños y varían entre ejecuciones (la primera incluye la compilación del navegador). La capa más costosa es la lógica difusa: evalúa ${r.parcelas.length} parcelas × ${SISTEMA_URGENCIA.reglas.length} reglas × 101 puntos. Para ver cómo crece cada algoritmo hay que aumentar n, como en la comparación de abajo.</p>
 
-    <h3>¿Por qué Merge Sort? Comparación con los otros ordenamientos</h3>
+    <h4>¿Por qué Merge Sort? Comparación con los otros ordenamientos</h4>
     <p class="nota">Se ordenan urgencias simuladas para granjas de distinto tamaño. Cada celda muestra comparaciones y tiempo; en verde, el que menos compara.</p>
     <button type="button" id="correr" class="boton">Ejecutar comparación</button>
     <div id="resultados-orden" class="resultados-orden"></div>`;

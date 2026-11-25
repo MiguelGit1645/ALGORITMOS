@@ -39,7 +39,7 @@ export function pintarResumen(contenedor, r) {
 export function pintarEmergencia(contenedor, r) {
   const e = r.emergencia;
   if (!e) {
-    contenedor.innerHTML = '<div class="emergencia"><h2>Emergencia</h2><p>Ninguna parcela necesita agua.</p></div>';
+    contenedor.innerHTML = '<div class="emergencia"><p class="etiqueta">Emergencia</p><p>Ninguna parcela necesita agua.</p></div>';
     return;
   }
   const esRiego = e.tipo === 'riego';
@@ -54,7 +54,7 @@ export function pintarEmergencia(contenedor, r) {
 
   contenedor.innerHTML = `
     <div class="emergencia">
-      <h2>${esRiego ? 'Parcela crítica' : 'Parcela más saturada'}</h2>
+      <p class="etiqueta">${esRiego ? 'Parcela crítica' : 'Parcela más saturada'}</p>
       <p class="critica-nombre">${e.parcela.id} ${e.parcela.cultivo}
         <span>${esRiego ? `urgencia ${num(e.parcela.urgencia, 1)}` : `humedad ${e.parcela.humedad} %`}</span></p>
       <ol class="rutas">
@@ -140,15 +140,15 @@ export function pintarDetalle(contenedor, r, id) {
 
   contenedor.innerHTML = `
     <div class="bloque-cabecera">
-      <h2>Cómo decidió la lógica difusa para ${p.id} (${p.cultivo})</h2>
+      <h3 class="h-bloque">Cómo decidió la lógica difusa para ${p.id} (${p.cultivo})</h3>
       <p>Toca una parcela en el mapa o en la tabla para ver su razonamiento. Cada entrada pertenece en cierto grado a varios conjuntos; las reglas se activan con el mínimo de sus condiciones y el resultado sale del centroide.</p>
     </div>
     <div class="detalle">
       <div class="variables">${variables}</div>
       <div class="reglas">
-        <h3>Reglas que se activaron</h3>
+        <h4>Reglas que se activaron</h4>
         <ol>${disparadas || '<li>Ninguna regla se activó.</li>'}</ol>
-        <h3>Salida agregada y centroide</h3>
+        <h4>Salida agregada y centroide</h4>
         <svg viewBox="0 0 ${W} ${H + 22}" class="curva" role="img" aria-label="Curva de salida, centroide en ${num(p.urgencia, 1)}">
           <polygon points="0,${H} ${puntos} ${W},${H}" class="area"/>
           <line x1="${cx}" y1="0" x2="${cx}" y2="${H}" class="centroide"/>
