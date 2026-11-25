@@ -773,3 +773,61 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem) 5r
   .col-etiqueta { font-size: 0.6rem; }
 }
 [hidden] { display: none !important; }
+
+/* ═══════════════════════ Explicación de pizarras y explorador de reglas ═══════════════════════ */
+.pz-explicacion { margin: 0.9rem 1.2rem 0; border: 1px solid var(--linea); border-radius: 14px; background: var(--papel-3); }
+.pz-explicacion > summary, .fz-como-reglas > summary {
+  cursor: pointer; list-style: none; padding: 0.75rem 1rem; font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.pz-explicacion > summary::-webkit-details-marker, .fz-como-reglas > summary::-webkit-details-marker { display: none; }
+.pz-explicacion > summary::before, .fz-como-reglas > summary::before {
+  content: ''; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform 0.2s;
+}
+.pz-explicacion[open] > summary::before, .fz-como-reglas[open] > summary::before { transform: rotate(45deg); }
+.pz-exp-rejilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; padding: 0 1rem 1rem; }
+.pz-exp-rejilla section { background: var(--papel-2); border: 1px solid var(--linea); border-radius: 12px; padding: 0.9rem 1rem; }
+.pz-exp-rejilla h5 { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; }
+.pz-exp-rejilla h5 span {
+  width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem;
+  background: var(--violeta); color: #fff;
+}
+.pz-exp-rejilla p, .pz-exp-rejilla li { font-size: 0.86rem; line-height: 1.55; color: var(--tinta-2); }
+.pz-exp-rejilla p + p { margin-top: 0.5rem; }
+.pz-exp-rejilla strong, .pz-exp-rejilla em { color: var(--tinta); }
+.pz-exp-rejilla ol { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
+
+.fz-reglas li[data-numero] { cursor: pointer; }
+.fz-reglas li[data-numero]:hover { border-color: var(--violeta-2); }
+.pz-panel h5 small { font-weight: 500; }
+
+.fz-explorador { margin: 0 1.2rem 1.2rem; padding: 1.1rem; border: 1px solid rgba(142, 108, 255, 0.4); border-radius: 16px; background: var(--papel-3); scroll-margin-top: 5rem; }
+.fz-exp-cabecera { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.9rem; }
+.fz-exp-cabecera h5 { font-size: 1.05rem; font-weight: 800; }
+.fz-exp-cabecera p { font-size: 0.86rem; color: var(--tinta-2); margin-top: 0.2rem; max-width: 60ch; }
+.fz-exp-cabecera select { max-width: min(520px, 80vw); }
+.fz-regla-texto { font-weight: 700; font-size: 0.98rem; display: flex; gap: 0.6rem; align-items: baseline; }
+.fz-regla-texto .pz-num { color: var(--violeta-2); font-weight: 800; font-size: 0.9rem; }
+.fz-porque { margin-top: 0.6rem; padding: 0.7rem 0.9rem; border-radius: 10px; background: var(--resalte); font-size: 0.9rem; line-height: 1.55; }
+.fz-condiciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; margin-top: 0.9rem; }
+.fz-condicion { background: var(--papel-2); border: 1px solid var(--linea); border-radius: 12px; padding: 0.8rem 0.9rem; }
+.fz-condicion h6 { font-size: 0.9rem; font-weight: 700; margin: 0 0 0.3rem; }
+.fz-condicion p { font-size: 0.82rem; line-height: 1.5; color: var(--tinta-2); margin-top: 0.35rem; }
+.fz-condicion p b { color: var(--tinta); }
+.fz-condicion .fz-grado-txt { color: var(--tinta); font-size: 0.88rem; }
+.fz-consecuencia.activa { border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+.fz-consecuencia.inactiva { border-style: dashed; }
+.fz-mini { width: 100%; height: auto; display: block; }
+.fz-punto { fill: #f0a429; stroke: var(--papel-2); stroke-width: 2; }
+.fz-como-reglas { margin-top: 1rem; border: 1px solid var(--linea); border-radius: 12px; background: var(--papel-2); }
+.fz-como-reglas > div { padding: 0 1rem 1rem; }
+.fz-como-reglas p { font-size: 0.88rem; line-height: 1.6; color: var(--tinta-2); margin-bottom: 0.6rem; }
+.fz-tabla-medidas td { white-space: normal !important; vertical-align: top; font-size: 0.82rem; line-height: 1.5; }
+.fz-tabla-medidas td small { display: block; color: var(--tinta-2); }
+.fz-tabla-medidas td:nth-child(3) { color: var(--tinta-2); min-width: 220px; }
+.fz-conj + .fz-conj { margin-top: 0.35rem; }
+.fz-conj b { color: var(--violeta-2); margin-right: 0.25rem; }
+
+@media (max-width: 900px) {
+  .pz-exp-rejilla { grid-template-columns: 1fr; }
+}

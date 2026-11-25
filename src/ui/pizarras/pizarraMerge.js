@@ -1,7 +1,7 @@
 import { mergeSort } from '../../algoritmos/mergeSort.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores } from './comun.js';
+import { cabeceraPizarra, pintarContadores, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 /**
  * Pizarra de Merge Sort: ordena las urgencias de las parcelas con el mismo
@@ -10,6 +10,7 @@ import { cabeceraPizarra, pintarContadores } from './comun.js';
 export function crearPizarraMerge(contenedor) {
   contenedor.innerHTML = `
     ${cabeceraPizarra({ titulo: 'Pizarra de Merge Sort', subtitulo: 'Ordena las parcelas por urgencia · divide y vencerás' })}
+    ${explicacionPizarra()}
     <div class="pz-opciones">
       <label class="pz-campo"><span>Datos</span>
         <select data-datos><option value="granja">Urgencias de la época</option><option value="aleatorio">Números aleatorios</option></select></label>
@@ -45,7 +46,24 @@ export function crearPizarraMerge(contenedor) {
     return Array.from({ length: 12 }, (_, i) => ({ id: `n${i}`, etiqueta: `[${i}]`, valor: Math.round(Math.random() * 99) + 1 }));
   }
 
+  function explicar() {
+    const granja = selDatos.value === 'granja';
+    const desc = selOrden.value === 'desc';
+    pintarExplicacion(contenedor, {
+      datos: granja
+        ? `<p>Cada columna es una parcela y su altura es la <strong>urgencia de riego</strong> (0 a 100) que calculó la lógica difusa para la época «${resultado.escenario.nombre}». Las columnas empiezan en el orden de la granja: P1, P2, …, P12.</p>`
+        : '<p>Doce números al azar entre 1 y 100, para probar el algoritmo con otros datos. Presiona «Nuevos aleatorios» para cambiarlos.</p>',
+      como: `<ol>
+          <li><strong>Dividir:</strong> parte la lista por la mitad una y otra vez hasta tener elementos sueltos (log₂ n niveles).</li>
+          <li><strong>Comparar:</strong> al volver, mira el primer elemento de cada mitad y pasa al resultado el ${desc ? 'mayor' : 'menor'}.</li>
+          <li><strong>Mezclar:</strong> repite hasta vaciar una mitad, copia lo que sobra y esa parte queda ordenada.</li>
+        </ol>`,
+      porque: `<p>El orden decide los <strong>turnos de riego</strong>: ${desc ? 'primero se riega la parcela más urgente' : 'aquí se ve al revés, de menor a mayor urgencia'}. Se eligió Merge Sort porque <strong>siempre</strong> tarda O(n log n), aunque los datos lleguen en el peor orden, y porque es <strong>estable</strong>: si dos parcelas empatan en urgencia, conservan su orden original y el desempate es justo y predecible.</p>`,
+    });
+  }
+
   function preparar() {
+    explicar();
     btnAleatorio.hidden = selDatos.value !== 'aleatorio';
     inicial = datos();
     const comparar = selOrden.value === 'desc' ? (a, b) => b.valor - a.valor : (a, b) => a.valor - b.valor;

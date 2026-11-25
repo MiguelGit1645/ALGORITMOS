@@ -11,7 +11,7 @@ Página web del proyecto (fondo oscuro con acentos violeta, tema claro opcional)
 
 **Autor:** Jesus Miguel Carlier Fernandez · **Docente:** Yamil Vicente Cardenas Miguel · Trabajo individual.
 
-La sección de aplicación incluye **pizarras paso a paso** al estilo de Graphix (proyecto grupal de la materia) para los cuatro algoritmos usados: lógica difusa, Merge Sort, Kruskal y Dijkstra, con controles Atrás, Reproducir, Siguiente paso, Ejecutar todo, Reiniciar y Velocidad. Las pizarras ejecutan las mismas funciones del proyecto, que informan cada paso mediante un parámetro opcional `alPaso`.
+La sección de aplicación incluye **pizarras paso a paso** al estilo de Graphix (proyecto grupal de la materia) para los cuatro algoritmos usados: lógica difusa, Merge Sort, Kruskal y Dijkstra, con controles Atrás, Reproducir, Siguiente paso, Ejecutar todo, Reiniciar y Velocidad. Las pizarras ejecutan las mismas funciones del proyecto, que informan cada paso mediante un parámetro opcional `alPaso`. Cada pizarra explica de dónde salen sus datos, cómo funciona y por qué, y la de lógica difusa tiene un **explorador de reglas**: cada regla y cada variable guardan su justificación (`porque` y `explicacion` en `src/sistema/reglasDifusas.js`).
 
 Proyecto de **Análisis de Algoritmos**. Sistema que, según la época del año, decide **a qué parcelas regar primero** y **por qué canales llevar el agua** con la menor pérdida posible.
 

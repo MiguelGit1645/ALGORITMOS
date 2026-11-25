@@ -2,7 +2,7 @@ import { dijkstra, reconstruirRuta } from '../../algoritmos/dijkstra.js';
 import { FUENTE, DESAGUE } from '../../sistema/granja.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, dist } from './comun.js';
+import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, dist, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 const REDES = {
   riego: { nombre: 'Riego', peso: (a) => a.perdida, unidad: '% de pérdida', excluir: DESAGUE, formato: (v) => `${num(v, 1)}%` },
@@ -16,6 +16,7 @@ const REDES = {
 export function crearPizarraDijkstra(contenedor) {
   contenedor.innerHTML = `
     ${cabeceraPizarra({ titulo: 'Pizarra de Dijkstra', subtitulo: 'Camino de menor costo con montículo de mínimos' })}
+    ${explicacionPizarra()}
     <div class="pz-opciones">
       <label class="pz-campo"><span>Red</span>
         <select data-red><option value="riego">Riego · peso = pérdida de agua</option><option value="drenaje">Drenaje · peso = tiempo de evacuación</option></select></label>
@@ -67,7 +68,27 @@ export function crearPizarraDijkstra(contenedor) {
   }
   const orden = (id) => (id === FUENTE ? -1 : id === DESAGUE ? 99 : Number(id.slice(1)));
 
+  function explicar() {
+    const riego = selRed.value === 'riego';
+    pintarExplicacion(contenedor, {
+      datos: riego
+        ? `<p><strong>Red de riego:</strong> la represa R y las parcelas. El peso de cada canal es el <strong>% de agua que se pierde</strong> en él (longitud × tasa de pérdida de la lógica difusa).</p>
+           <p>Por defecto va de la represa a la parcela más urgente de la época, pero puedes elegir cualquier origen y destino.</p>`
+        : `<p><strong>Red de drenaje:</strong> las parcelas y el desagüe D. El peso de cada canal es el <strong>tiempo de evacuación</strong> = longitud ÷ capacidad: un canal largo y angosto tarda más.</p>
+           <p>Por defecto va de la parcela más saturada al río, pero puedes elegir otro origen y destino.</p>`,
+      como: `<ol>
+          <li>El origen empieza con distancia 0 y el resto con ∞.</li>
+          <li>Saca del <strong>montículo</strong> el nodo más cercano todavía no visitado: su distancia ya es definitiva.</li>
+          <li><strong>Relaja</strong> sus vecinos: si llegar por este nodo cuesta menos que lo anotado, actualiza la distancia y el «previo».</li>
+          <li>Al terminar, la ruta se reconstruye siguiendo «previo» desde el destino.</li>
+        </ol>`,
+      porque: `<p><strong>¿Por qué riego y drenaje?</strong> Porque el agua cambia de sentido según la época. En época seca hay que <em>llevar</em> agua de la represa a las parcelas perdiendo lo menos posible, así que el costo es la pérdida. En época de lluvias hay que <em>sacar</em> el exceso de las parcelas hacia el río lo más rápido posible, así que el costo es el tiempo. Es el mismo algoritmo con otro peso.</p>
+        <p>Dijkstra sirve en los dos casos porque <strong>ningún peso es negativo</strong>. Busca en <strong>todo el campo</strong>, no solo en la red de Kruskal: en una emergencia se puede abrir un canal que normalmente está cerrado.</p>`,
+    });
+  }
+
   function preparar() {
+    explicar();
     const origen = selOrigen.value;
     const destino = selDestino.value;
     const distancias = new Map(nodos.map((n) => [n, Infinity]));

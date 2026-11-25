@@ -2,14 +2,33 @@ import { pertenencia } from '../../algoritmos/logicaDifusa.js';
 import { SISTEMA_URGENCIA, SISTEMA_PERDIDA } from '../../sistema/reglasDifusas.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores } from './comun.js';
+import { cabeceraPizarra, pintarContadores, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 const NOMBRES = {
   lluvia: 'Lluvia', temperatura: 'Temperatura', humedad_suelo: 'Humedad del suelo', sensibilidad: 'Sensibilidad',
   revestimiento: 'Revestimiento', urgencia: 'Urgencia', tasa_perdida: 'Tasa de pérdida',
 };
 const COLORES = ['#8e6cff', '#22c1a6', '#f0a429', '#e0694a', '#4fa3f0'];
-const bonito = (t) => t.replace('_', ' ');
+const ACENTOS = { calida: 'cálida', fria: 'fría', mamposteria: 'mampostería', tuberia: 'tubería', minima: 'mínima', tasa_perdida: 'tasa de pérdida', humedad_suelo: 'humedad del suelo' };
+const bonito = (t) => ACENTOS[t] ?? t.replace('_', ' ');
+const decimal = (v) => String(v).replace('.', ',');
+const TIPO_CANAL = { 2: 'tierra', 5: 'mampostería', 9: 'tubería' };
+
+/** Explica en palabras las medidas de un conjunto difuso. */
+function describirConjunto(variable, nombre) {
+  const [tipo, params] = variable.conjuntos[nombre];
+  const u = variable.unidad === '0–10' ? '' : ` ${variable.unidad}`;
+  const [min, max] = variable.rango;
+  const lista = params.map(decimal).join('  ');
+  if (tipo === 'trimf') {
+    const [a, b, c] = params.map(decimal);
+    return `Triangular [${lista}]: pertenece del todo solo en ${b}${u}; empieza a pertenecer en ${a} y deja de hacerlo en ${c}${u}.`;
+  }
+  const [a, b, c, d] = params;
+  if (a === b && a === min) return `Trapezoidal [${lista}]: pertenece del todo desde ${decimal(min)} hasta ${decimal(c)}${u} y deja de pertenecer en ${decimal(d)}${u}.`;
+  if (c === d && d === max) return `Trapezoidal [${lista}]: empieza a pertenecer en ${decimal(a)}${u} y pertenece del todo desde ${decimal(b)} hasta ${decimal(max)}${u}.`;
+  return `Trapezoidal [${lista}]: pertenece del todo entre ${decimal(b)} y ${decimal(c)}${u}; empieza en ${decimal(a)} y termina en ${decimal(d)}${u}.`;
+}
 
 /**
  * Pizarra de lógica difusa: recorre la inferencia Mamdani que ya calculó el
@@ -18,6 +37,7 @@ const bonito = (t) => t.replace('_', ' ');
 export function crearPizarraDifusa(contenedor) {
   contenedor.innerHTML = `
     ${cabeceraPizarra({ titulo: 'Pizarra de lógica difusa', subtitulo: 'Sistema Mamdani · misma configuración que MATLAB' })}
+    ${explicacionPizarra()}
     <div class="pz-opciones">
       <label class="pz-campo"><span>Sistema</span>
         <select data-sistema><option value="urgencia">Urgencia de riego (parcela)</option><option value="perdida">Pérdida de agua (canal)</option></select></label>
@@ -32,10 +52,21 @@ export function crearPizarraDifusa(contenedor) {
       </div>
       <aside class="pz-panel">
         <p class="pz-paso" data-paso aria-live="polite"></p>
-        <h5>Reglas</h5>
+        <h5>Reglas <small>(toca una para explorarla)</small></h5>
         <ol class="pz-lista fz-reglas" data-reglas></ol>
       </aside>
-    </div>`;
+    </div>
+    <section class="fz-explorador" data-explorador>
+      <div class="fz-exp-cabecera">
+        <div><h5>Explorar una regla</h5><p>Elige cualquier regla para ver sus condiciones, las medidas de cada conjunto y cómo calcula su resultado con los datos de la parcela o canal elegido.</p></div>
+        <label class="pz-campo"><span>Regla</span><select data-regla></select></label>
+      </div>
+      <div data-detalle-regla></div>
+      <details class="fz-como-reglas">
+        <summary>¿De dónde salen las medidas y cómo se pusieron las reglas?</summary>
+        <div data-como-reglas></div>
+      </details>
+    </section>`;
 
   const selSistema = contenedor.querySelector('[data-sistema]');
   const selCaso = contenedor.querySelector('[data-caso]');
@@ -45,6 +76,10 @@ export function crearPizarraDifusa(contenedor) {
   const svgSalida = contenedor.querySelector('[data-salida]');
   const listaReglas = contenedor.querySelector('[data-reglas]');
   const texto = contenedor.querySelector('[data-paso]');
+  const selRegla = contenedor.querySelector('[data-regla]');
+  const detalleRegla = contenedor.querySelector('[data-detalle-regla]');
+  const comoReglas = contenedor.querySelector('[data-como-reglas]');
+  const explorador = contenedor.querySelector('[data-explorador]');
   let resultado = null;
   let sistema = SISTEMA_URGENCIA;
   let caso = null;
@@ -64,11 +99,146 @@ export function crearPizarraDifusa(contenedor) {
     preparar();
   }
 
+  /** De dónde sale cada valor de entrada para el caso elegido. */
+  function origenDato(nombre) {
+    const esc = resultado.escenario;
+    if (selSistema.value === 'perdida') {
+      if (nombre === 'temperatura') return `${esc.temperatura} °C: temperatura de la época «${esc.nombre}».`;
+      return `${caso.revestimiento}: el canal ${caso.desde}–${caso.hasta} es de ${TIPO_CANAL[caso.revestimiento]}.`;
+    }
+    const p = caso;
+    if (nombre === 'lluvia') return p.cubierta ? '0 mm: el invernadero está techado y no recibe lluvia.' : `${esc.lluvia} mm: lluvia de la época «${esc.nombre}».`;
+    if (nombre === 'temperatura') return `${esc.temperatura} °C: temperatura de la época «${esc.nombre}».`;
+    if (nombre === 'humedad_suelo') {
+      if (p.cubierta) return `${p.humedad} %: humedad controlada del invernadero (no cambia con la época).`;
+      const ajuste = esc.ajusteHumedad;
+      return `${p.humedad} % = humedad base de ${p.id} (${p.humedadBase} %) ${ajuste < 0 ? '−' : '+'} ${Math.abs(ajuste)} por la época${p.humedad !== p.humedadBase + ajuste ? ', limitada entre 5 y 100 %' : ''}.`;
+    }
+    return `${p.sensibilidad} de 10: sensibilidad asignada al cultivo de ${p.cultivo.toLowerCase()}.`;
+  }
+
+  function explicar() {
+    const urgencia = selSistema.value === 'urgencia';
+    const esc = resultado.escenario;
+    pintarExplicacion(contenedor, {
+      datos: urgencia
+        ? `<p><strong>Lluvia y temperatura</strong> vienen de la época elegida («${esc.nombre}»: ${esc.lluvia} mm y ${esc.temperatura} °C). La <strong>humedad del suelo</strong> es la humedad base de cada parcela ajustada por la época (${esc.ajusteHumedad > 0 ? '+' : ''}${esc.ajusteHumedad} puntos), y la <strong>sensibilidad</strong> depende del cultivo.</p>
+           <p>Son valores ilustrativos dentro de rangos reales del valle: en Cochabamba casi no llueve en junio y julio, y en enero caen unos 159 mm.</p>`
+        : `<p>La <strong>temperatura</strong> es la de la época elegida (${esc.temperatura} °C) y el <strong>revestimiento</strong> es el material de cada canal: tierra, mampostería o tubería.</p>`,
+      como: `<ol>
+          <li><strong>Fuzzificar:</strong> cada entrada pertenece en cierto grado (0 a 1) a cada conjunto.</li>
+          <li><strong>Evaluar reglas:</strong> la fuerza de una regla es el mínimo de los grados de sus condiciones.</li>
+          <li><strong>Recortar y agregar:</strong> cada regla recorta su conjunto de salida a su fuerza y se unen con el máximo.</li>
+          <li><strong>Centroide:</strong> el centro de esa figura es el número final.</li>
+        </ol>`,
+      porque: urgencia
+        ? `<p>La granja no tiene años de mediciones, pero sí hay <strong>criterio de riego</strong>. La lógica difusa permite escribir ese criterio como reglas («si el suelo está seco y hace calor, regar ya») y evita los saltos bruscos de un umbral fijo: con 39 % o 41 % de humedad la urgencia cambia poco, no de golpe.</p>`
+        : `<p>La pérdida de un canal depende de dos causas que no se miden con exactitud: la <strong>filtración</strong> (según el material) y la <strong>evaporación</strong> (según el calor). Las reglas combinan ambas y dan una tasa que luego se multiplica por la longitud del canal.</p>`,
+    });
+
+    // Cómo se pusieron las medidas y las reglas
+    const filas = [...sistema.entradas, sistema.salida]
+      .map((v) => `<tr><td><strong>${NOMBRES[v.nombre]}</strong><small>${decimal(v.rango[0])} a ${decimal(v.rango[1])} ${v.unidad === '0–10' ? '' : v.unidad}</small></td>
+        <td>${Object.keys(v.conjuntos).map((c) => `<div class="fz-conj"><b>${bonito(c)}</b> ${describirConjunto(v, c)}</div>`).join('')}</td>
+        <td>${v.explicacion}</td></tr>`)
+      .join('');
+    comoReglas.innerHTML = `
+      <p>${urgencia
+        ? 'Las reglas se escribieron con el razonamiento de un regante: cuánta agua le falta a la planta depende de la humedad del suelo, de la lluvia que llega y del calor que la hace perder agua (la misma idea del balance hídrico de la FAO), y qué tan grave es depende de la sensibilidad del cultivo. Se cubrió cada combinación de humedad y lluvia para que siempre se active al menos una regla, y se agregaron reglas de sensibilidad para dar prioridad a los cultivos delicados.'
+        : 'Las reglas combinan las dos formas en que un canal pierde agua: por filtración (depende del material) y por evaporación (depende del calor). Hay una regla para cada material y temperatura, así que siempre se activa al menos una.'}</p>
+      <p>No se calibraron con mediciones de una granja real: son un criterio inicial que un agrónomo podría ajustar moviendo las medidas de la tabla.</p>
+      <div class="tabla-scroll"><table class="tabla compacta fz-tabla-medidas"><thead><tr><th>Variable</th><th>Conjuntos y medidas</th><th>De dónde sale el rango</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+
+    selRegla.innerHTML = sistema.reglas
+      .map((r, i) => `<option value="${i + 1}">R${i + 1} · SI ${Object.entries(r.si).map(([v, c]) => `${bonito(v)} es ${bonito(c)}`).join(' Y ')} → ${bonito(r.entonces)}</option>`)
+      .join('');
+    const primeraActiva = caso.inferencia.activaciones.find((a) => a.fuerza > 0);
+    selRegla.value = String(primeraActiva?.numero ?? 1);
+    explorarRegla();
+  }
+
+  /** Mini gráfica de una variable resaltando un conjunto. */
+  function miniGrafica(variable, resaltado, valor, altura) {
+    const [min, max] = variable.rango;
+    const X0 = 14, X1 = 266, Y0 = 96, Y1 = 14;
+    const sx = (x) => X0 + ((x - min) / (max - min)) * (X1 - X0);
+    const sy = (y) => Y0 - y * (Y0 - Y1);
+    let html = `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" class="eje-linea"/>
+      <text x="${X0}" y="${Y0 + 15}" class="eje-texto">${decimal(min)}</text><text x="${X1}" y="${Y0 + 15}" class="eje-texto" text-anchor="end">${decimal(max)} ${variable.unidad === '0–10' ? '' : variable.unidad}</text>`;
+    Object.entries(variable.conjuntos).forEach(([nombre, conjunto], k) => {
+      const puntos = [];
+      for (let i = 0; i <= 120; i++) {
+        const x = min + ((max - min) * i) / 120;
+        puntos.push(`${sx(x).toFixed(1)},${sy(pertenencia(conjunto, x)).toFixed(1)}`);
+      }
+      const activo = nombre === resaltado;
+      if (activo) html += `<polygon points="${sx(min)},${Y0} ${puntos.join(' ')} ${sx(max)},${Y0}" fill="${COLORES[k]}" opacity="0.18"/>`;
+      html += `<polyline points="${puntos.join(' ')}" fill="none" stroke="${COLORES[k]}" stroke-width="${activo ? 2.6 : 1.2}" opacity="${activo ? 1 : 0.3}"/>`;
+    });
+    if (altura !== undefined) {
+      // salida: área recortada a la fuerza de la regla
+      const conjunto = variable.conjuntos[resaltado];
+      const puntos = [];
+      for (let i = 0; i <= 120; i++) {
+        const x = min + ((max - min) * i) / 120;
+        puntos.push(`${sx(x).toFixed(1)},${sy(Math.min(altura, pertenencia(conjunto, x))).toFixed(1)}`);
+      }
+      html += `<polygon points="${sx(min)},${Y0} ${puntos.join(' ')} ${sx(max)},${Y0}" class="fz-area completa"/>`;
+      if (altura > 0) html += `<line x1="${X0}" y1="${sy(altura)}" x2="${X1}" y2="${sy(altura)}" class="fz-valor"/>`;
+    }
+    if (valor !== undefined) {
+      const v = Math.min(max, Math.max(min, valor));
+      const g = pertenencia(variable.conjuntos[resaltado], v);
+      html += `<line x1="${sx(v)}" y1="${Y0}" x2="${sx(v)}" y2="${Y1 - 4}" class="fz-valor"/><circle cx="${sx(v)}" cy="${sy(g)}" r="5" class="fz-punto"/>`;
+    }
+    return `<svg viewBox="0 0 280 116" class="fz-mini" aria-hidden="true">${html}</svg>`;
+  }
+
+  function explorarRegla() {
+    const numero = Number(selRegla.value);
+    const regla = sistema.reglas[numero - 1];
+    const act = caso.inferencia.activaciones[numero - 1];
+    const variables = Object.fromEntries(sistema.entradas.map((v) => [v.nombre, v]));
+    const entradas = selSistema.value === 'urgencia' ? caso.entradas : { temperatura: resultado.escenario.temperatura, revestimiento: caso.revestimiento };
+    const nombreCaso = selSistema.value === 'urgencia' ? `${caso.id} (${caso.cultivo})` : `el canal ${caso.desde}–${caso.hasta}`;
+
+    const condiciones = Object.entries(regla.si).map(([v, c]) => {
+      const variable = variables[v];
+      const grado = caso.inferencia.grados[v][c];
+      return `<article class="fz-condicion">
+        <h6>${NOMBRES[v]} es «${bonito(c)}»</h6>
+        ${miniGrafica(variable, c, entradas[v])}
+        <p class="fz-grado-txt">Grado para ${nombreCaso}: <strong>${num(grado, 2)}</strong></p>
+        <p><b>Medidas:</b> ${describirConjunto(variable, c)}</p>
+        <p><b>Dato:</b> ${origenDato(v)}</p>
+      </article>`;
+    });
+    const grados = Object.entries(regla.si).map(([v, c]) => num(caso.inferencia.grados[v][c], 2));
+    const salida = sistema.salida;
+
+    detalleRegla.innerHTML = `
+      <p class="fz-regla-texto"><span class="pz-num">R${numero}</span> SI ${Object.entries(regla.si).map(([v, c]) => `${bonito(v)} es «${bonito(c)}»`).join(' Y ')} ENTONCES ${bonito(salida.nombre)} es «${bonito(regla.entonces)}»</p>
+      <p class="fz-porque"><strong>Por qué existe esta regla:</strong> ${regla.porque}</p>
+      <div class="fz-condiciones">
+        ${condiciones.join('')}
+        <article class="fz-condicion fz-consecuencia ${act.fuerza > 0 ? 'activa' : 'inactiva'}">
+          <h6>Resultado: ${NOMBRES[salida.nombre].toLowerCase()} «${bonito(regla.entonces)}»</h6>
+          ${miniGrafica(salida, regla.entonces, undefined, act.fuerza)}
+          <p class="fz-grado-txt">Fuerza = ${grados.length > 1 ? `mín(${grados.join('; ')})` : grados[0]} = <strong>${num(act.fuerza, 2)}</strong></p>
+          <p><b>Medidas:</b> ${describirConjunto(salida, regla.entonces)}</p>
+          <p>${act.fuerza > 0
+            ? `La regla se activa: aporta el conjunto «${bonito(regla.entonces)}» recortado a ${num(act.fuerza, 2)}, que se suma (con el máximo) a lo que aportan las demás reglas.`
+            : 'La regla no se activa: al menos una condición tiene grado 0, y como se usa el mínimo, su fuerza es 0 y no aporta nada a la salida.'}</p>
+        </article>
+      </div>`;
+  }
+
   function preparar() {
     const casos = selSistema.value === 'urgencia' ? resultado.parcelas : resultado.canales;
     caso = casos.find((c) => c.id === selCaso.value) ?? casos[0];
     const inf = caso.inferencia;
     const entradas = selSistema.value === 'urgencia' ? caso.entradas : { temperatura: resultado.escenario.temperatura, revestimiento: caso.revestimiento };
+    explicar();
 
     pasos = [];
     sistema.entradas.forEach((v, k) => {
@@ -173,7 +343,7 @@ export function crearPizarraDifusa(contenedor) {
         const evaluada = paso && paso.fase !== 'entrada' && (paso.fase !== 'regla' || a.numero <= paso.regla);
         const clase = actual ? 'actual' : evaluada ? (a.fuerza > 0 ? 'aceptada' : 'inactiva') : '';
         const condiciones = Object.entries(a.regla.si).map(([v, c]) => `${bonito(v)} es ${bonito(c)}`).join(' Y ');
-        return `<li class="${clase}"><span class="pz-num">R${a.numero}</span><span>SI ${condiciones} → ${bonito(a.regla.entonces)}</span><span class="n">${evaluada || actual ? num(a.fuerza, 2) : ''}</span></li>`;
+        return `<li class="${clase}" data-numero="${a.numero}" tabindex="0" role="button"><span class="pz-num">R${a.numero}</span><span>SI ${condiciones} → ${bonito(a.regla.entonces)}</span><span class="n">${evaluada || actual ? num(a.fuerza, 2) : ''}</span></li>`;
       })
       .join('');
     listaReglas.querySelector('li.actual')?.scrollIntoView({ block: 'nearest' });
@@ -199,6 +369,20 @@ export function crearPizarraDifusa(contenedor) {
 
   selSistema.addEventListener('change', () => llenarCasos());
   selCaso.addEventListener('change', preparar);
+  selRegla.addEventListener('change', explorarRegla);
+  const abrirRegla = (li) => {
+    selRegla.value = li.dataset.numero;
+    explorarRegla();
+    explorador.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  };
+  listaReglas.addEventListener('click', (e) => {
+    const li = e.target.closest('li[data-numero]');
+    if (li) abrirRegla(li);
+  });
+  listaReglas.addEventListener('keydown', (e) => {
+    const li = e.target.closest('li[data-numero]');
+    if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirRegla(li); }
+  });
 
   return {
     actualizar(nuevo, { parcela } = {}) {

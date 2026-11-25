@@ -97,7 +97,7 @@ export const ESCENARIOS = {
   normal: {
     id: 'normal',
     nombre: 'Época de transición',
-    meses: 'abril – mayo',
+    meses: 'marzo – abril',
     lluvia: 45,
     temperatura: 21,
     ajusteHumedad: 0,

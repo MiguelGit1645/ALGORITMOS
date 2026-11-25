@@ -2,7 +2,7 @@ import { kruskal, podarArbol } from '../../algoritmos/kruskal.js';
 import { FUENTE, DESAGUE } from '../../sistema/granja.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra } from './comun.js';
+import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 const CRITERIOS = {
   riego: { nombre: 'Árbol de expansión mínimo', peso: (a) => a.perdida, unidad: '%', maximo: false, excluir: DESAGUE },
@@ -16,6 +16,7 @@ const CRITERIOS = {
 export function crearPizarraKruskal(contenedor) {
   contenedor.innerHTML = `
     ${cabeceraPizarra({ titulo: 'Pizarra de Kruskal', subtitulo: 'Árbol de expansión sobre los canales de la granja' })}
+    ${explicacionPizarra()}
     <div class="pz-opciones">
       <label class="pz-campo"><span>Objetivo</span>
         <select data-criterio>
@@ -50,7 +51,29 @@ export function crearPizarraKruskal(contenedor) {
 
   const reproductor = crearReproductor(contenedor.querySelector('[data-reproductor]'), { alMostrar: mostrar });
 
+  function explicar() {
+    const riego = selCriterio.value === 'riego';
+    const esc = resultado.escenario;
+    pintarExplicacion(contenedor, {
+      datos: riego
+        ? `<p><strong>Nodos:</strong> la represa R y las 12 parcelas (el desagüe no participa: en el riego el agua no va al río).</p>
+           <p><strong>Peso de cada canal:</strong> el porcentaje de agua que se pierde en él, calculado como longitud ÷ 100 × tasa de pérdida. La tasa la da la lógica difusa según el material del canal y el calor de la época (${esc.temperatura} °C).</p>`
+        : `<p><strong>Nodos:</strong> las 12 parcelas y el desagüe D al río (la represa no participa: en lluvias el agua sale, no entra).</p>
+           <p><strong>Peso de cada canal:</strong> su capacidad en litros por segundo, que depende de su tamaño (dato de cada canal).</p>`,
+      como: `<ol>
+          <li>Ordena los canales de ${riego ? 'menor a mayor pérdida' : 'mayor a menor capacidad'} (con el mismo Merge Sort).</li>
+          <li>Los recorre en ese orden. <strong>Union-Find</strong> recuerda qué nodos ya están conectados.</li>
+          <li>Si el canal une dos grupos distintos, se acepta; si sus extremos ya estaban unidos, formaría un <strong>ciclo</strong> y se descarta.</li>
+          <li>Termina cuando tiene V − 1 canales: todos los nodos quedan conectados.</li>
+        </ol>`,
+      porque: riego
+        ? `<p>Tener abiertos todos los canales desperdicia agua y trabajo. El <strong>árbol mínimo</strong> conecta todas las parcelas con la menor pérdida total posible y sin canales repetidos. Al final se <strong>podan</strong> las ramas que solo llevan a parcelas que en esta época no necesitan agua.</p>`
+        : `<p>En época de lluvias el problema es el <strong>exceso</strong> de agua. El <strong>árbol máximo</strong> se queda con los canales más grandes, y en él el camino de cada parcela al río tiene el mayor «cuello de botella» posible: el agua sale por la ruta que más caudal soporta.</p>`,
+    });
+  }
+
   function preparar() {
+    explicar();
     criterio = CRITERIOS[selCriterio.value];
     nodos = [...new Set(resultado.canales.flatMap((c) => [c.desde, c.hasta]))].filter((n) => n !== criterio.excluir);
     aristas = resultado.canales.filter((c) => c.desde !== criterio.excluir && c.hasta !== criterio.excluir);

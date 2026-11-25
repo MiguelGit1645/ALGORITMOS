@@ -61,3 +61,22 @@ export function dibujarGrafoPizarra(svg, nodos, aristas, { claseArista, claseNod
 
 /** Formato corto para distancias de Dijkstra. */
 export const dist = (v) => (v === Infinity || v === undefined ? '∞' : num(v, 1));
+
+/** Bloque de explicación de cada pizarra: de dónde salen los datos, cómo funciona y por qué. */
+export function explicacionPizarra() {
+  return `
+    <details class="pz-explicacion" open>
+      <summary>Explicación de la pizarra</summary>
+      <div class="pz-exp-rejilla">
+        <section><h5><span aria-hidden="true">1</span>De dónde salen los datos</h5><div data-exp="datos"></div></section>
+        <section><h5><span aria-hidden="true">2</span>Cómo funciona</h5><div data-exp="como"></div></section>
+        <section><h5><span aria-hidden="true">3</span>Por qué lo hace así</h5><div data-exp="porque"></div></section>
+      </div>
+    </details>`;
+}
+
+export function pintarExplicacion(contenedor, { datos, como, porque }) {
+  contenedor.querySelector('[data-exp="datos"]').innerHTML = datos;
+  contenedor.querySelector('[data-exp="como"]').innerHTML = como;
+  contenedor.querySelector('[data-exp="porque"]').innerHTML = porque;
+}
