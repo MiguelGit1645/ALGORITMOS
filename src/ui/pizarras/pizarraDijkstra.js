@@ -2,7 +2,7 @@ import { dijkstra, reconstruirRuta } from '../../algoritmos/dijkstra.js';
 import { FUENTE, DESAGUE } from '../../sistema/granja.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, dist, explicacionPizarra, pintarExplicacion } from './comun.js';
+import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, posiciones, dist, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 const REDES = {
   riego: { nombre: 'Riego', peso: (a) => a.perdida, unidad: '% de pérdida', excluir: DESAGUE, formato: (v) => `${num(v, 1)}%` },
@@ -62,7 +62,11 @@ export function crearPizarraDijkstra(contenedor) {
   function cambiarRed(origen, destino) {
     red = REDES[selRed.value];
     aristas = resultado.canales.filter((c) => c.desde !== red.excluir && c.hasta !== red.excluir);
-    nodos = [...new Set(aristas.flatMap((c) => [c.desde, c.hasta]))].sort((a, b) => orden(a) - orden(b));
+    nodos = [...resultado.especiales.map((n) => n.id), ...resultado.parcelas.map((p) => p.id)]
+      .filter((n) => n !== red.excluir)
+      .sort((a, b) => orden(a) - orden(b));
+    if (!nodos.includes(origen)) origen = nodos[0];
+    if (!nodos.includes(destino) || destino === origen) destino = nodos.find((n) => n !== origen) ?? origen;
     llenarSelects(origen, destino);
     preparar();
   }
@@ -138,6 +142,7 @@ export function crearPizarraDijkstra(contenedor) {
     if (paso.ruta) for (let k = 1; k < paso.ruta.length; k++) enRuta.add([paso.ruta[k - 1], paso.ruta[k]].sort().join('|'));
 
     dibujarGrafoPizarra(svg, nodos, aristas, {
+      posiciones: posiciones(resultado),
       claseArista: (a) => {
         if (enRuta.has([a.desde, a.hasta].sort().join('|'))) return 'ruta';
         if (paso.relajando === a.id) return 'actual';
@@ -173,7 +178,10 @@ export function crearPizarraDijkstra(contenedor) {
   }
 
   selRed.addEventListener('change', () => {
-    const porDefecto = selRed.value === 'riego' ? [FUENTE, resultado.orden[0].id] : [resultado.emergencia?.origen ?? 'P4', DESAGUE];
+    const e = resultado.emergencia;
+    const porDefecto = selRed.value === 'riego'
+      ? [FUENTE, e?.tipo === 'riego' ? e.destino : resultado.orden[0].id]
+      : [e?.tipo === 'drenaje' ? e.origen : resultado.orden.at(-1).id, DESAGUE];
     cambiarRed(...porDefecto);
   });
   selOrigen.addEventListener('change', preparar);
@@ -182,7 +190,9 @@ export function crearPizarraDijkstra(contenedor) {
   return {
     actualizar(nuevo) {
       resultado = nuevo;
-      selRed.value = nuevo.escenario.modo;
+      const hayDesague = nuevo.especiales.some((n) => n.id === DESAGUE);
+      selRed.querySelector('option[value="drenaje"]').disabled = !hayDesague;
+      selRed.value = hayDesague ? nuevo.escenario.modo : 'riego';
       const e = nuevo.emergencia;
       cambiarRed(e?.origen ?? FUENTE, e?.destino ?? nuevo.orden[0].id);
     },

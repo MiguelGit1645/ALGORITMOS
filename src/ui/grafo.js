@@ -1,8 +1,7 @@
-import { PARCELAS, NODOS_ESPECIALES, FUENTE, DESAGUE } from '../sistema/granja.js';
+import { FUENTE, DESAGUE } from '../sistema/granja.js';
 import { num, colorUrgencia, colorHumedad, tintaSobre } from './formato.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
-const POS = Object.fromEntries([...PARCELAS, ...NODOS_ESPECIALES].map((n) => [n.id, n]));
 
 function el(tipo, atributos = {}, padre) {
   const e = document.createElementNS(SVG, tipo);
@@ -18,6 +17,7 @@ function el(tipo, atributos = {}, padre) {
 export function dibujarGrafo(svg, resultado, { seleccion, alSeleccionar }) {
   svg.replaceChildren();
   const { red, emergencia, escenario } = resultado;
+  const POS = Object.fromEntries([...resultado.parcelas, ...resultado.especiales].map((n) => [n.id, n]));
   const esRiego = escenario.modo === 'riego';
 
   el('title', { id: 'grafo-titulo' }, svg).textContent =
@@ -56,7 +56,7 @@ export function dibujarGrafo(svg, resultado, { seleccion, alSeleccionar }) {
   }
 
   // Nodos especiales
-  for (const n of NODOS_ESPECIALES) {
+  for (const n of resultado.especiales) {
     const usado = (n.id === FUENTE && (esRiego || puntuales.size)) || (n.id === DESAGUE && !esRiego);
     const g = el('g', { class: `especial ${usado ? '' : 'apagado'}`, transform: `translate(${n.x},${n.y})` }, svg);
     if (n.id === FUENTE) {
@@ -69,9 +69,8 @@ export function dibujarGrafo(svg, resultado, { seleccion, alSeleccionar }) {
   }
 
   // Parcelas
-  const porId = Object.fromEntries(resultado.parcelas.map((p) => [p.id, p]));
-  for (const base of PARCELAS) {
-    const p = porId[base.id];
+  for (const p of resultado.parcelas) {
+    const base = p;
     const relleno = esRiego || p.cubierta ? colorUrgencia(p.urgencia) : colorHumedad(p.humedad);
     const g = el(
       'g',

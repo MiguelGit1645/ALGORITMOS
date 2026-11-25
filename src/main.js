@@ -1,5 +1,5 @@
 import './styles.css';
-import { planificar } from './sistema/planificador.js';
+import { planificar, ErrorDeCaso } from './sistema/planificador.js';
 import { ESCENARIOS } from './sistema/granja.js';
 import { dibujarGrafo, textoLeyenda } from './ui/grafo.js';
 import { pintarResumen, pintarEmergencia, pintarTurnos } from './ui/paneles.js';
@@ -7,10 +7,36 @@ import { pintarAnalisis } from './ui/analisis.js';
 import { dibujarFiguraPertenencia, pintarTablaResultados } from './ui/documento.js';
 import { iniciarNavegacion, iniciarTema } from './ui/navegacion.js';
 import { crearPizarras } from './ui/pizarras/index.js';
+import { crearEditor } from './ui/editor.js';
 
-const estado = { escenario: 'seca', seleccion: null, resultado: null };
+const estado = { fuente: 'ejemplo', escenario: 'seca', caso: null, seleccion: null, resultado: null };
 const $ = (id) => document.getElementById(id);
 const pizarras = crearPizarras($('pz-pestanas'), $('pz-area'));
+const editor = crearEditor($('editor-area'), {
+  alCambiar(caso) {
+    if (estado.fuente !== 'propio' || !caso) return; // con errores se mantiene el último caso válido
+    estado.caso = caso;
+    estado.seleccion = null;
+    calcular();
+  },
+});
+
+// Granja de ejemplo o caso propio
+document.querySelector('.fuente-datos').addEventListener('click', (e) => {
+  const boton = e.target.closest('[data-fuente]');
+  if (!boton || boton.dataset.fuente === estado.fuente) return;
+  estado.fuente = boton.dataset.fuente;
+  document.querySelectorAll('[data-fuente]').forEach((b) => b.setAttribute('aria-pressed', String(b === boton)));
+  const propio = estado.fuente === 'propio';
+  $('editor').hidden = !propio;
+  $('epocas').hidden = propio;
+  estado.seleccion = null;
+  if (propio) {
+    estado.caso = editor.caso() ?? estado.caso;
+    if (!estado.caso) return; // el editor muestra qué falta
+  }
+  calcular();
+});
 
 function pintarEpocas() {
   $('epocas').innerHTML = Object.values(ESCENARIOS)
@@ -49,7 +75,14 @@ function pintarVista() {
 }
 
 function calcular() {
-  estado.resultado = planificar(estado.escenario);
+  try {
+    estado.resultado = estado.fuente === 'propio'
+      ? planificar(estado.caso.escenario, estado.caso)
+      : planificar(estado.escenario);
+  } catch (error) {
+    if (error instanceof ErrorDeCaso) return; // el editor ya muestra el problema
+    throw error;
+  }
   document.body.dataset.modo = estado.resultado.escenario.modo;
   pintarEpocas();
   pintarResumen($('resumen'), estado.resultado);

@@ -3,7 +3,7 @@ import { mergeSort } from '../algoritmos/mergeSort.js';
 import { kruskal, podarArbol } from '../algoritmos/kruskal.js';
 import { dijkstra, reconstruirRuta } from '../algoritmos/dijkstra.js';
 import { SISTEMA_URGENCIA, SISTEMA_PERDIDA } from './reglasDifusas.js';
-import { PARCELAS, CANALES, ESCENARIOS, FUENTE, DESAGUE } from './granja.js';
+import { PARCELAS, CANALES, ESCENARIOS, FUENTE, DESAGUE, NODOS_ESPECIALES } from './granja.js';
 
 /** Urgencia mínima (0–100) para que una parcela necesite riego. */
 export const UMBRAL_RIEGO = 30;
@@ -11,6 +11,9 @@ export const UMBRAL_RIEGO = 30;
 export const LAMINA_M3_HA = 450;
 /** Tope de pérdida acumulada en una ruta (%). */
 const PERDIDA_MAXIMA = 90;
+
+/** Error de datos que la interfaz muestra al usuario tal cual. */
+export class ErrorDeCaso extends Error {}
 
 const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -22,9 +25,20 @@ const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
  *  Capa 3  Kruskal       → red activa (riego mínima o drenaje máxima)
  *          Dijkstra      → ruta óptima de emergencia
  */
-export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES } = {}) {
-  const escenario = ESCENARIOS[escenarioId];
-  if (!escenario) throw new Error(`Escenario desconocido: ${escenarioId}`);
+export function planificar(escenarioEntrada, { parcelas = PARCELAS, canales = CANALES, especiales = NODOS_ESPECIALES } = {}) {
+  // El escenario puede ser el id de una época de ejemplo o un objeto con el clima propio
+  const escenario = typeof escenarioEntrada === 'string' ? ESCENARIOS[escenarioEntrada] : escenarioEntrada;
+  if (!escenario) throw new Error(`Escenario desconocido: ${escenarioEntrada}`);
+  const hayDesague = especiales.some((n) => n.id === DESAGUE);
+  if (!especiales.some((n) => n.id === FUENTE)) throw new ErrorDeCaso('Falta la represa R: es la fuente del agua de riego.');
+  if (parcelas.length === 0) throw new ErrorDeCaso('Agrega al menos una parcela.');
+  if (escenario.modo === 'drenaje' && !hayDesague) {
+    throw new ErrorDeCaso('Para drenar en época de lluvias se necesita el desagüe D al río.');
+  }
+  const ids = new Set([...parcelas.map((p) => p.id), ...especiales.map((n) => n.id)]);
+  for (const c of canales) {
+    if (!ids.has(c.desde) || !ids.has(c.hasta)) throw new ErrorDeCaso(`El canal ${c.id} une un nodo que no existe.`);
+  }
   const tiempos = {};
   const medir = (nombre, fn) => {
     const t0 = performance.now();
@@ -79,10 +93,9 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     nodos: [FUENTE, ...idsParcelas],
     aristas: evaluadas.canales.filter((c) => c.desde !== DESAGUE && c.hasta !== DESAGUE),
   };
-  const grafoDrenaje = {
-    nodos: [...idsParcelas, DESAGUE],
-    aristas: evaluadas.canales.filter((c) => c.desde !== FUENTE && c.hasta !== FUENTE),
-  };
+  const grafoDrenaje = hayDesague
+    ? { nodos: [...idsParcelas, DESAGUE], aristas: evaluadas.canales.filter((c) => c.desde !== FUENTE && c.hasta !== FUENTE) }
+    : null;
 
   // ─────────────── CAPA 2: Merge Sort (orden de atención) ───────────────
   const statsOrden = { comparaciones: 0 };
@@ -126,9 +139,10 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     escenario.modo === 'riego' ? red.activa : grafoRiego.aristas;
   const rutasDesdeFuente = dijkstra(grafoRiego.nodos, redAbastecimiento, FUENTE, { peso: (a) => a.perdida });
 
-  // Turnos (asignación voraz respetando el orden de Merge Sort)
-  let turno = 1;
-  let disponible = escenario.aguaPorTurno;
+  // Turnos (asignación voraz respetando el orden de Merge Sort):
+  // se llena el turno en orden de urgencia; la parcela que ya no entra abre el siguiente.
+  let turno = 0;
+  let disponible = 0;
   const rutasRiegoLluvias = [];
   for (const p of orden) {
     if (!p.necesitaRiego) {
@@ -137,16 +151,23 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     }
     const ruta = reconstruirRuta(rutasDesdeFuente, p.id);
     p.ruta = ruta;
-    p.perdidaRuta = Math.min(ruta ? ruta.costo : PERDIDA_MAXIMA, PERDIDA_MAXIMA);
+    if (!ruta) {
+      // Parcela sin canal que la una a la represa: no se le puede llevar agua
+      p.sinRuta = true;
+      p.turno = null;
+      continue;
+    }
+    p.perdidaRuta = Math.min(ruta.costo, PERDIDA_MAXIMA);
     p.eficiencia = 1 - p.perdidaRuta / 100;
     p.requerido = p.demanda / p.eficiencia; // agua que debe salir de la represa
-    if (p.requerido > disponible && disponible < escenario.aguaPorTurno) {
+    if (turno === 0 || p.requerido > disponible) {
       turno++;
       disponible = escenario.aguaPorTurno;
     }
     p.turno = turno;
+    p.excede = p.requerido > escenario.aguaPorTurno; // ni un turno completo le alcanza
     disponible -= p.requerido;
-    if (escenario.modo === 'drenaje' && ruta) rutasRiegoLluvias.push(...ruta.aristas);
+    if (escenario.modo === 'drenaje') rutasRiegoLluvias.push(...ruta.aristas);
   }
   if (escenario.modo === 'drenaje') red.riegoPuntual = [...new Set(rutasRiegoLluvias)];
 
@@ -169,6 +190,7 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     }
     // Drenaje: la parcela más saturada (al aire libre) evacúa hacia el río
     const expuestas = evaluadas.parcelas.filter((p) => !p.cubierta);
+    if (expuestas.length === 0) return null;
     const critica = mergeSort(expuestas, (a, b) => b.humedad - a.humedad)[0];
     const optimo = dijkstra(grafoDrenaje.nodos, grafoDrenaje.aristas, critica.id, { peso: (a) => a.tiempo });
     const enArbol = dijkstra(grafoDrenaje.nodos, red.activa, critica.id, { peso: (a) => a.tiempo });
@@ -184,10 +206,12 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     };
   });
 
-  const aguaRequerida = pendientes.reduce((s, p) => s + p.requerido, 0);
+  const atendidas = pendientes.filter((p) => !p.sinRuta);
+  const aguaRequerida = atendidas.reduce((s, p) => s + p.requerido, 0);
 
   return {
     escenario,
+    especiales,
     parcelas: evaluadas.parcelas,
     canales: evaluadas.canales,
     orden,
@@ -196,9 +220,10 @@ export function planificar(escenarioId, { parcelas = PARCELAS, canales = CANALES
     emergencia,
     resumen: {
       parcelasConRiego: pendientes.length,
-      turnos: pendientes.length ? turno : 0,
+      sinConexion: pendientes.length - atendidas.length,
+      turnos: turno,
       aguaRequerida,
-      demandaNeta: pendientes.reduce((s, p) => s + p.demanda, 0),
+      demandaNeta: atendidas.reduce((s, p) => s + p.demanda, 0),
     },
     tiempos,
   };

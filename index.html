@@ -544,11 +544,23 @@ MEZCLAR(I, D)
         <header class="encabezado">
           <p class="capitulo-num">05</p>
           <h2>Aplicación <span class="acento">interactiva</span></h2>
-          <p>Elige una época del año: el planificador ejecuta los cuatro algoritmos juntos y, más abajo, puedes ver cada uno paso a paso en su pizarra.</p>
+          <p>Usa la granja de ejemplo con sus tres épocas o arma tu propio caso. El planificador ejecuta los cuatro algoritmos juntos y, más abajo, puedes ver cada uno paso a paso en su pizarra.</p>
         </header>
 
         <div class="app-cabecera">
+          <div class="fuente-datos" role="group" aria-label="Datos de la aplicación">
+            <button type="button" data-fuente="ejemplo" aria-pressed="true">Granja de ejemplo</button>
+            <button type="button" data-fuente="propio" aria-pressed="false">Mi propio caso</button>
+          </div>
           <nav class="epocas" id="epocas" aria-label="Época del año"></nav>
+        </div>
+
+        <div class="bloque-editor" id="editor" hidden>
+          <div class="bloque-cabecera">
+            <h3 class="h-bloque">Arma tu propia granja</h3>
+            <p>Dibuja la represa, las parcelas, el desagüe y los canales, y completa sus datos. El mapa, los turnos y las pizarras de abajo se recalculan con tu caso.</p>
+          </div>
+          <div id="editor-area"></div>
         </div>
 
         <div class="tablero">

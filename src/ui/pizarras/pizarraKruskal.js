@@ -2,7 +2,7 @@ import { kruskal, podarArbol } from '../../algoritmos/kruskal.js';
 import { FUENTE, DESAGUE } from '../../sistema/granja.js';
 import { num } from '../formato.js';
 import { crearReproductor } from './reproductor.js';
-import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, explicacionPizarra, pintarExplicacion } from './comun.js';
+import { cabeceraPizarra, pintarContadores, dibujarGrafoPizarra, posiciones, explicacionPizarra, pintarExplicacion } from './comun.js';
 
 const CRITERIOS = {
   riego: { nombre: 'Árbol de expansión mínimo', peso: (a) => a.perdida, unidad: '%', maximo: false, excluir: DESAGUE },
@@ -75,7 +75,8 @@ export function crearPizarraKruskal(contenedor) {
   function preparar() {
     explicar();
     criterio = CRITERIOS[selCriterio.value];
-    nodos = [...new Set(resultado.canales.flatMap((c) => [c.desde, c.hasta]))].filter((n) => n !== criterio.excluir);
+    // Todos los nodos del caso (también los que no tienen canales), menos el que no participa
+    nodos = [...resultado.especiales.map((n) => n.id), ...resultado.parcelas.map((p) => p.id)].filter((n) => n !== criterio.excluir);
     aristas = resultado.canales.filter((c) => c.desde !== criterio.excluir && c.hasta !== criterio.excluir);
 
     pasos = [];
@@ -104,7 +105,7 @@ export function crearPizarraKruskal(contenedor) {
     const ultimo = pasos.at(-1);
     pasos.push({
       estados: ultimo.estados, total: r.total, aceptadas, rechazadas, final: true,
-      texto: `Árbol completo: ${r.arbol.length} aristas para ${nodos.length} nodos (V − 1). ${criterio.maximo ? 'Capacidad' : 'Pérdida'} total: ${formatoValor(r.total)}. ${aristas.length - r.arbol.length - rechazadas > 0 ? `Los ${aristas.length - r.arbol.length - rechazadas} canales restantes no se evalúan: el árbol ya estaba completo.` : ''}`,
+      texto: `${r.conexo ? `Árbol completo: ${r.arbol.length} aristas para ${nodos.length} nodos (V − 1).` : `El grafo no está conectado: se obtuvo un bosque de ${nodos.length - r.arbol.length} partes (${r.arbol.length} aristas).`} ${criterio.maximo ? 'Capacidad' : 'Pérdida'} total: ${formatoValor(r.total)}. ${aristas.length - r.arbol.length - rechazadas > 0 ? `Los ${aristas.length - r.arbol.length - rechazadas} canales restantes no se evalúan: el árbol ya estaba completo.` : ''}`,
     });
 
     if (!criterio.maximo) {
@@ -136,6 +137,7 @@ export function crearPizarraKruskal(contenedor) {
       : pasos[i];
 
     dibujarGrafoPizarra(svg, nodos, aristas, {
+      posiciones: posiciones(resultado),
       claseArista: (a) => (paso.actual === a.id ? 'actual' : paso.estados.get(a.id) ?? 'pendiente'),
       claseNodo: () => '',
       peso: formato,
@@ -162,7 +164,9 @@ export function crearPizarraKruskal(contenedor) {
   return {
     actualizar(nuevo) {
       resultado = nuevo;
-      selCriterio.value = nuevo.escenario.modo;
+      const hayDesague = nuevo.especiales.some((n) => n.id === DESAGUE);
+      selCriterio.querySelector('option[value="drenaje"]').disabled = !hayDesague;
+      selCriterio.value = hayDesague ? nuevo.escenario.modo : 'riego';
       preparar();
     },
     detener: () => reproductor.detener(),

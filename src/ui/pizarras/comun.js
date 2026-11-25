@@ -1,7 +1,7 @@
-import { PARCELAS, NODOS_ESPECIALES } from '../../sistema/granja.js';
 import { num } from '../formato.js';
 
-export const POSICIONES = Object.fromEntries([...PARCELAS, ...NODOS_ESPECIALES].map((n) => [n.id, n]));
+/** Posición (x, y) de cada nodo del caso actual (granja de ejemplo o caso propio). */
+export const posiciones = (resultado) => Object.fromEntries([...resultado.parcelas, ...resultado.especiales].map((n) => [n.id, n]));
 
 /** Encabezado de pizarra al estilo de Graphix: título con indicador, subtítulo y contadores. */
 export function cabeceraPizarra({ titulo, subtitulo }) {
@@ -23,13 +23,14 @@ export function pintarContadores(contenedor, contadores) {
 
 /**
  * Dibuja un grafo de la granja (mismo lienzo que el mapa) para las pizarras de grafos.
+ * @param opciones.posiciones  id => { x, y }
  * @param opciones.claseArista  arista => clase extra ('aceptada', 'actual', ...)
  * @param opciones.claseNodo    id => clase extra
  * @param opciones.peso         arista => texto del peso
  * @param opciones.nota         id => texto pequeño bajo el nodo (p. ej. la distancia)
  * @param opciones.ruta         lista de ids de nodos a resaltar como ruta final
  */
-export function dibujarGrafoPizarra(svg, nodos, aristas, { claseArista, claseNodo, peso, nota, ruta }) {
+export function dibujarGrafoPizarra(svg, nodos, aristas, { posiciones: POSICIONES, claseArista, claseNodo, peso, nota, ruta }) {
   let html = '';
   for (const a of aristas) {
     const p = POSICIONES[a.desde];

@@ -64,3 +64,34 @@ test('Dijkstra informa extracciones y relajaciones', () => {
   assert.equal(extraidos[0].nodo, 'A');
   for (const p of extraidos) assert.equal(p.distancia, r.distancia.get(p.nodo));
 });
+
+test('Planificador: acepta un caso propio pequeño con clima propio', () => {
+  const r = planificar(
+    { id: 'propio', nombre: 'Mi caso', lluvia: 5, temperatura: 30, ajusteHumedad: 0, aguaPorTurno: 500, modo: 'riego' },
+    {
+      especiales: [{ id: 'R', nombre: 'Represa', x: 50, y: 50 }],
+      parcelas: [
+        { id: 'P1', cultivo: 'Papa', area: 1, sensibilidad: 7, humedadBase: 20, x: 150, y: 50 },
+        { id: 'P2', cultivo: 'Maíz', area: 1, sensibilidad: 6, humedadBase: 25, x: 250, y: 50 },
+        { id: 'P3', cultivo: 'Haba', area: 1, sensibilidad: 5, humedadBase: 20, x: 350, y: 50 },
+      ],
+      canales: [
+        { id: 'c1', desde: 'R', hasta: 'P1', longitud: 100, revestimiento: 9, capacidad: 40 },
+        { id: 'c2', desde: 'P1', hasta: 'P2', longitud: 100, revestimiento: 2, capacidad: 40 },
+      ],
+    },
+  );
+  const p3 = r.parcelas.find((p) => p.id === 'P3');
+  assert.equal(p3.sinRuta, true, 'P3 no está conectada');
+  assert.equal(r.resumen.sinConexion, 1);
+  assert.ok(Number.isFinite(r.resumen.aguaRequerida));
+  assert.ok(r.parcelas.filter((p) => p.turno).every((p) => p.ruta));
+});
+
+test('Planificador: pide el desagüe para drenar', () => {
+  assert.throws(
+    () => planificar({ id: 'x', nombre: 'x', lluvia: 130, temperatura: 24, ajusteHumedad: 30, aguaPorTurno: 500, modo: 'drenaje' },
+      { especiales: [{ id: 'R', x: 0, y: 0 }], parcelas: [{ id: 'P1', cultivo: 'Papa', area: 1, sensibilidad: 5, humedadBase: 40 }], canales: [] }),
+    /desagüe/,
+  );
+});
