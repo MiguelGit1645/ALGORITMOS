@@ -48,3 +48,14 @@ test('Selección, Inserción y Shell también ordenan bien', () => {
   assert.deepEqual(insercion(datos, cmp), esperado);
   assert.deepEqual(shell(datos, cmp), esperado);
 });
+
+test('Merge Sort informa sus pasos y el último deja la lista ordenada', () => {
+  const pasos = [];
+  const stats = { comparaciones: 0 };
+  const r = mergeSort([5, 2, 9, 1, 7], (a, b) => a - b, stats, (p) => pasos.push(p));
+  const comparaciones = pasos.filter((p) => p.tipo === 'comparar').length;
+  assert.equal(comparaciones, stats.comparaciones);
+  const ultimo = pasos.at(-1);
+  assert.equal(ultimo.tipo, 'mezclar');
+  assert.deepEqual(ultimo.resultado, r);
+});

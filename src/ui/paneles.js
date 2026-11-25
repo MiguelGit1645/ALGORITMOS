@@ -1,14 +1,6 @@
-import { describirRegla } from '../algoritmos/logicaDifusa.js';
-import { SISTEMA_URGENCIA } from '../sistema/reglasDifusas.js';
 import { UMBRAL_RIEGO } from '../sistema/planificador.js';
 import { num, colorUrgencia } from './formato.js';
 
-const NOMBRES_VARIABLE = {
-  lluvia: 'Lluvia',
-  temperatura: 'Temperatura',
-  humedad_suelo: 'Humedad del suelo',
-  sensibilidad: 'Sensibilidad del cultivo',
-};
 
 // ───────────────────────── Resumen ─────────────────────────
 export function pintarResumen(contenedor, r) {
@@ -103,58 +95,4 @@ export function pintarTurnos(tabla, explicacion, r, seleccion, alSeleccionar) {
     tr.addEventListener('click', elegir);
     tr.addEventListener('keydown', (e) => e.key === 'Enter' && elegir());
   });
-}
-
-// ───────────────────────── Detalle difuso ─────────────────────────
-export function pintarDetalle(contenedor, r, id) {
-  const p = r.parcelas.find((x) => x.id === id) ?? r.orden[0];
-  const { inferencia } = p;
-
-  const variables = SISTEMA_URGENCIA.entradas
-    .map((v) => {
-      const grados = inferencia.grados[v.nombre];
-      const conjuntos = Object.entries(grados)
-        .map(
-          ([c, g]) => `<li class="${g > 0 ? 'activo' : ''}"><span>${c.replace('_', ' ')}</span>
-            <span class="barra fina"><span style="width:${g * 100}%"></span></span><span class="n">${num(g, 2)}</span></li>`,
-        )
-        .join('');
-      return `<div class="variable"><h4>${NOMBRES_VARIABLE[v.nombre]} <span class="n">${v.unidad === '0–10' ? `${p.entradas[v.nombre]} de 10` : `${p.entradas[v.nombre]} ${v.unidad}`}</span></h4><ul>${conjuntos}</ul></div>`;
-    })
-    .join('');
-
-  const disparadas = inferencia.activaciones
-    .filter((a) => a.fuerza > 0)
-    .sort((a, b) => b.fuerza - a.fuerza)
-    .map(
-      (a) => `<li><span class="n fuerza">${num(a.fuerza, 2)}</span>
-        <span>R${a.numero}: ${describirRegla(a.regla, 'urgencia').replaceAll('_', ' ')}</span></li>`,
-    )
-    .join('');
-
-  // Curva agregada + centroide
-  const W = 420;
-  const H = 120;
-  const puntos = inferencia.curva.map(({ x, y }) => `${(x / 100) * W},${H - y * (H - 10)}`).join(' ');
-  const cx = (p.urgencia / 100) * W;
-
-  contenedor.innerHTML = `
-    <div class="bloque-cabecera">
-      <h3 class="h-bloque">Cómo decidió la lógica difusa para ${p.id} (${p.cultivo})</h3>
-      <p>Toca una parcela en el mapa o en la tabla para ver su razonamiento. Cada entrada pertenece en cierto grado a varios conjuntos; las reglas se activan con el mínimo de sus condiciones y el resultado sale del centroide.</p>
-    </div>
-    <div class="detalle">
-      <div class="variables">${variables}</div>
-      <div class="reglas">
-        <h4>Reglas que se activaron</h4>
-        <ol>${disparadas || '<li>Ninguna regla se activó.</li>'}</ol>
-        <h4>Salida agregada y centroide</h4>
-        <svg viewBox="0 0 ${W} ${H + 22}" class="curva" role="img" aria-label="Curva de salida, centroide en ${num(p.urgencia, 1)}">
-          <polygon points="0,${H} ${puntos} ${W},${H}" class="area"/>
-          <line x1="${cx}" y1="0" x2="${cx}" y2="${H}" class="centroide"/>
-          <text x="${cx > W / 2 ? cx - 8 : cx + 8}" y="14" class="centroide-texto" text-anchor="${cx > W / 2 ? 'end' : 'start'}">centroide = ${num(p.urgencia, 1)}</text>
-          <text x="0" y="${H + 18}" class="eje">0</text><text x="${W}" y="${H + 18}" class="eje fin">100</text>
-        </svg>
-      </div>
-    </div>`;
 }

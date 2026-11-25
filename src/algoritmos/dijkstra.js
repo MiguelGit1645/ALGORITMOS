@@ -10,10 +10,13 @@ import { MinHeap } from './minHeap.js';
  * @param nodos    ids de los nodos
  * @param aristas  [{ id, desde, hasta, ... }]
  * @param origen   id del nodo de partida
- * @param opciones { peso: arista => número, dirigido: boolean }
+ * @param opciones { peso: arista => número, dirigido: boolean,
+ *                   alPaso: función opcional (la usa la pizarra) que recibe
+ *                     { tipo: 'extraer', nodo, distancia }
+ *                     { tipo: 'relajar', desde, hacia, arista, anterior, nueva, mejora } }
  * @returns { origen, distancia: Map, previo: Map, visitados: número }
  */
-export function dijkstra(nodos, aristas, origen, { peso = (a) => a.peso, dirigido = false } = {}) {
+export function dijkstra(nodos, aristas, origen, { peso = (a) => a.peso, dirigido = false, alPaso = null } = {}) {
   if (!nodos.includes(origen)) throw new Error(`El origen "${origen}" no está en el grafo`);
 
   // Lista de adyacencia
@@ -40,10 +43,14 @@ export function dijkstra(nodos, aristas, origen, { peso = (a) => a.peso, dirigid
     const { prioridad: d, valor: u } = cola.extraer();
     if (cerrados.has(u)) continue; // entrada vieja del montículo
     cerrados.add(u);
+    alPaso?.({ tipo: 'extraer', nodo: u, distancia: d });
 
     for (const { vecino, w, arista } of adyacencia.get(u)) {
+      if (cerrados.has(vecino)) continue; // ya tiene su distancia definitiva
       const nueva = d + w;
-      if (nueva < distancia.get(vecino)) {
+      const anterior = distancia.get(vecino);
+      alPaso?.({ tipo: 'relajar', desde: u, hacia: vecino, arista, anterior, nueva, mejora: nueva < anterior });
+      if (nueva < anterior) {
         distancia.set(vecino, nueva);
         previo.set(vecino, { nodo: u, arista });
         cola.insertar(nueva, vecino);

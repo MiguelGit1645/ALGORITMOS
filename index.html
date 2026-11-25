@@ -91,7 +91,7 @@
             <h3>Lógica difusa</h3>
             <p>Convierte «suelo algo seco» y «hace calor» en una urgencia de 0 a 100 y en la pérdida de cada canal.</p>
           </a>
-          <a class="tarjeta destacada" href="#t-merge">
+          <a class="tarjeta" href="#t-merge">
             <span class="icono"><svg viewBox="0 0 24 24"><path d="M4 18h3V9H4zM10.5 18h3V5h-3zM17 18h3v-6h-3z" /></svg></span>
             <span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9" /></svg></span>
             <h3>Merge Sort</h3>
@@ -132,22 +132,15 @@
         </header>
         <div class="texto">
           <p>
-            En Bolivia el agua para riego es escasa y se pierde con facilidad. La mayoría de los cerca de 5.700 sistemas de riego del país
-            son redes de canales tradicionales con pocas obras de regulación, y su eficiencia global se estima entre el 18 % y el 30 %: de
-            cada 10 litros que salen de la fuente, menos de 3 llegan al cultivo [3]. A esto se suma la variabilidad climática. En julio de
-            2026 el Monitor de Sequías del SENAMHI reportaba 17 municipios de Oruro en emergencia por sequía severa a extrema [1], y el mismo
-            servicio estimaba que la probabilidad de un evento El Niño crecería hasta un 82 % hacia fin de año [2].
+            En Bolivia el agua para riego es escasa y buena parte se pierde antes de llegar al cultivo: los sistemas tradicionales de
+            canales tienen una eficiencia de apenas 18 % a 30 %. En 2026, además, la sequía puso en emergencia a varios municipios del
+            Altiplano y se espera un evento El Niño hacia fin de año.
           </p>
           <p>
-            En las comunidades, la decisión de qué parcela regar, cuándo y por qué canal se toma muchas veces por costumbre o por turnos
-            fijos, y cuando varios regantes coinciden en el mismo periodo aparecen conflictos [5]. Sin embargo, esas decisiones son, en el
-            fondo, problemas clásicos de la computación: <strong>clasificar</strong> información imprecisa, <strong>ordenar</strong> por
-            prioridad, <strong>diseñar una red</strong> de costo mínimo y <strong>encontrar el camino</strong> más corto.
-          </p>
-          <p>
-            Este proyecto aplica cuatro algoritmos estudiados en la materia a una granja de 12 parcelas en el Valle Alto de Cochabamba, el
-            departamento con más sistemas de riego del país (1.333 de 5.669) [4]. La página presenta el problema, los fundamentos teóricos
-            de cada algoritmo, una aplicación interactiva que los ejecuta en tres épocas del año y las conclusiones del análisis.
+            Decidir qué parcela regar, en qué orden y por qué canal suele hacerse por costumbre. Este proyecto muestra que, en el fondo, son
+            problemas de algoritmos: <strong>clasificar</strong> información imprecisa, <strong>ordenar</strong> por prioridad,
+            <strong>diseñar una red</strong> de costo mínimo y <strong>encontrar el camino</strong> más corto. Los resuelve en una granja de
+            12 parcelas del Valle Alto de Cochabamba, el departamento con más sistemas de riego del país.
           </p>
         </div>
       </section>
@@ -218,9 +211,8 @@
         <div class="objetivo-general">
           <p class="etiqueta-general">Objetivo general</p>
           <p>
-            Aplicar los conocimientos de Análisis de Algoritmos mediante un sistema que planifique el riego de una granja del Valle Alto de
-            Cochabamba según la época del año, combinando lógica difusa, Merge Sort, Kruskal y Dijkstra, y analizando la complejidad y el
-            comportamiento de cada algoritmo.
+            Aplicar los conocimientos de Análisis de Algoritmos para planificar el riego de una granja según la época del año, usando
+            lógica difusa, Merge Sort, Kruskal y Dijkstra.
           </p>
         </div>
         <h3 class="subtitulo-centro">Objetivos específicos</h3>
@@ -238,29 +230,146 @@
         <header class="encabezado">
           <p class="capitulo-num">04</p>
           <h2>Marco <span class="acento">teórico</span></h2>
-          <p>Los conceptos que sostienen cada capa del sistema.</p>
+          <p>Sigue la misma ruta que los fundamentos de Graphix: primero el lenguaje de los grafos y los algoritmos, luego los cuatro algoritmos que usa este proyecto.</p>
         </header>
 
-        <article class="panel concepto" id="t-analisis">
-          <h3>4.1 Análisis de algoritmos</h3>
+        <nav class="ruta-marco" aria-label="Temas del marco teórico">
+          <a href="#t-grafo">Grafos</a><a href="#t-tipos">Tipos</a><a href="#t-representaciones">Representaciones</a>
+          <a href="#t-analisis">Algoritmos y complejidad</a><a href="#t-difusa">Lógica difusa</a><a href="#t-merge">Merge Sort</a>
+          <a href="#t-kruskal">Kruskal</a><a href="#t-dijkstra">Dijkstra</a>
+        </nav>
+
+        <article class="panel concepto" id="t-grafo">
+          <p class="concepto-num">4.1 · Definición</p>
+          <h3>¿Qué es un grafo?</h3>
           <p>
-            Analizar un algoritmo es estimar los recursos que consume, principalmente tiempo y memoria, en función del tamaño de la
-            entrada <var>n</var>. Se usa la notación asintótica: <var>f</var>(<var>n</var>) = O(<var>g</var>(<var>n</var>)) si existen
-            constantes <var>c</var> &gt; 0 y <var>n</var>₀ tales que <var>f</var>(<var>n</var>) ≤ <var>c</var>·<var>g</var>(<var>n</var>)
-            para todo <var>n</var> ≥ <var>n</var>₀ [6]. Se distingue el mejor caso, el caso promedio y el peor caso.
+            Un grafo es una estructura matemática que representa relaciones entre objetos. Se define como
+            <var>G</var> = (<var>V</var>, <var>E</var>), donde <var>V</var> es el conjunto de vértices y <var>E</var> el conjunto de aristas
+            que los conectan. Con esa abstracción se modelan redes sociales, mapas, dependencias de tareas y, en este proyecto, una red de
+            canales de riego.
+          </p>
+          <div class="mini-rejilla">
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><circle cx="60" cy="30" r="16" class="m-nodo" /><text x="60" y="35" class="m-texto">P1</text></svg>
+              <h4>Nodo o vértice</h4><p>Unidad básica de información. Aquí: la represa, el desagüe y cada parcela.</p>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><line x1="28" y1="30" x2="92" y2="30" class="m-arista" /><circle cx="22" cy="30" r="12" class="m-nodo" /><circle cx="98" cy="30" r="12" class="m-nodo" /></svg>
+              <h4>Arista o enlace</h4><p>Relación entre dos nodos. Aquí: cada canal que une dos puntos del campo.</p>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><line x1="60" y1="30" x2="20" y2="12" class="m-arista" /><line x1="60" y1="30" x2="20" y2="48" class="m-arista" /><line x1="60" y1="30" x2="102" y2="30" class="m-arista" /><circle cx="20" cy="12" r="8" class="m-nodo" /><circle cx="20" cy="48" r="8" class="m-nodo" /><circle cx="102" cy="30" r="8" class="m-nodo" /><circle cx="60" cy="30" r="14" class="m-nodo m-activo" /><text x="60" y="35" class="m-texto">3</text></svg>
+              <h4>Grado</h4><p>Número de aristas que llegan a un vértice (en el dibujo, 3). En la granja, P2, P6 y P9 tienen grado 5: son los cruces más conectados.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel concepto" id="t-tipos">
+          <p class="concepto-num">4.2 · Clasificación</p>
+          <h3>Tipos de grafos según sus conexiones</h3>
+          <p>La forma de las conexiones determina qué preguntas se pueden hacer y qué algoritmo conviene usar.</p>
+          <div class="mini-rejilla cuatro-col">
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><defs><marker id="flecha-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" class="m-flecha" /></marker></defs><line x1="30" y1="30" x2="82" y2="30" class="m-arista" marker-end="url(#flecha-m)" /><circle cx="22" cy="30" r="9" class="m-nodo" /><circle cx="98" cy="30" r="9" class="m-nodo" /></svg>
+              <h4>Dirigido</h4><p>Las flechas indican el sentido de la relación.</p>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><line x1="30" y1="30" x2="90" y2="30" class="m-arista" /><circle cx="22" cy="30" r="9" class="m-nodo" /><circle cx="98" cy="30" r="9" class="m-nodo" /></svg>
+              <h4>No dirigido</h4><p>Relaciones simétricas: el canal sirve en ambos sentidos.</p>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><line x1="30" y1="40" x2="90" y2="40" class="m-arista" /><text x="60" y="30" class="m-peso">7,5 %</text><circle cx="22" cy="40" r="9" class="m-nodo" /><circle cx="98" cy="40" r="9" class="m-nodo" /></svg>
+              <h4>Ponderado</h4><p>Cada arista tiene un valor: costo, distancia o pérdida de agua.</p>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 120 60" aria-hidden="true"><line x1="30" y1="40" x2="90" y2="40" class="m-arista" /><circle cx="22" cy="40" r="9" class="m-nodo" /><circle cx="98" cy="40" r="9" class="m-nodo" /></svg>
+              <h4>No ponderado</h4><p>Todas las aristas pesan lo mismo.</p>
+            </div>
+          </div>
+          <ul class="lista-propiedades">
+            <li><strong>Conexo:</strong> existe un camino entre cualquier par de vértices.</li>
+            <li><strong>Cíclico o acíclico:</strong> contiene o no recorridos que regresan al punto de partida.</li>
+            <li><strong>Denso o disperso:</strong> muchas o pocas aristas respecto al número de vértices.</li>
+          </ul>
+          <p class="aviso">
+            <strong>El campo de este proyecto</strong> es un grafo <strong>no dirigido, ponderado, conexo, cíclico y disperso</strong>:
+            14 vértices y 27 aristas de las 91 posibles. El peso de cada canal es su pérdida de agua (riego) o su capacidad (drenaje).
+          </p>
+        </article>
+
+        <article class="panel concepto" id="t-representaciones">
+          <p class="concepto-num">4.3 · Modelado</p>
+          <h3>Representaciones</h3>
+          <p>
+            La forma de guardar un grafo en memoria afecta el consumo de memoria y el tiempo de las operaciones. Ejemplo con una parte de la
+            granja: la represa R y las parcelas P1, P2 y P3, unidas por los canales R–P1, R–P2, R–P3, P1–P2 y P2–P3.
+          </p>
+          <div class="dos-columnas">
+            <div class="sub-panel">
+              <h4>Matriz de adyacencia</h4>
+              <p>Tabla <var>V</var> × <var>V</var>: un 1 indica que existe el canal. Consulta en O(1), pero ocupa O(<var>V</var>²) de memoria.</p>
+              <table class="tabla matriz">
+                <thead><tr><th></th><th>R</th><th>P1</th><th>P2</th><th>P3</th></tr></thead>
+                <tbody>
+                  <tr><th>R</th><td>0</td><td class="uno">1</td><td class="uno">1</td><td class="uno">1</td></tr>
+                  <tr><th>P1</th><td class="uno">1</td><td>0</td><td class="uno">1</td><td>0</td></tr>
+                  <tr><th>P2</th><td class="uno">1</td><td class="uno">1</td><td>0</td><td class="uno">1</td></tr>
+                  <tr><th>P3</th><td class="uno">1</td><td>0</td><td class="uno">1</td><td>0</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="sub-panel">
+              <h4>Lista de adyacencia</h4>
+              <p>Cada vértice guarda sus vecinos. Ocupa O(<var>V</var> + <var>E</var>) y recorrer los vecinos es muy rápido.</p>
+              <ul class="lista-ady">
+                <li><b>R</b> → [P1, P2, P3]</li>
+                <li><b>P1</b> → [R, P2]</li>
+                <li><b>P2</b> → [R, P1, P3]</li>
+                <li><b>P3</b> → [R, P2]</li>
+              </ul>
+            </div>
+          </div>
+          <p>
+            <strong>Decisión del proyecto:</strong> como el campo es disperso, Dijkstra trabaja con <strong>lista de adyacencia</strong>; Kruskal
+            solo necesita la <strong>lista de aristas</strong> ordenada por peso.
+          </p>
+        </article>
+
+        <article class="panel concepto" id="t-analisis">
+          <p class="concepto-num">4.4 · Análisis</p>
+          <h3>¿Qué es un algoritmo y qué significa su complejidad?</h3>
+          <p>
+            Un <strong>algoritmo</strong> es una secuencia finita y ordenada de pasos que, a partir de una <strong>entrada</strong>, produce una
+            <strong>salida</strong> correcta en un tiempo finito. Un buen algoritmo debe ser <strong>correcto</strong>, <strong>eficiente</strong>
+            y <strong>robusto</strong> ante distintos tamaños y formas de entrada. No existe uno «mejor» para todo: cada problema tiene
+            algoritmos especializados con supuestos y complejidades distintas.
+          </p>
+          <div class="mini-rejilla">
+            <div class="mini texto-mini"><h4>Entrada</h4><p>Clima, parcelas y el grafo de canales con sus pesos.</p></div>
+            <div class="mini texto-mini"><h4>Proceso</h4><p>Pasos finitos y bien definidos: inferir, ordenar, conectar, buscar rutas.</p></div>
+            <div class="mini texto-mini"><h4>Salida</h4><p>Turnos de riego, red de canales y ruta de emergencia.</p></div>
+          </div>
+          <p>
+            La <strong>complejidad</strong> describe cómo crecen el tiempo (complejidad temporal) y la memoria adicional (complejidad
+            espacial) cuando aumenta la entrada. Se expresa con la <strong>notación O</strong>: <var>f</var>(<var>n</var>) =
+            O(<var>g</var>(<var>n</var>)) si existen <var>c</var> &gt; 0 y <var>n</var>₀ tales que <var>f</var>(<var>n</var>) ≤
+            <var>c</var>·<var>g</var>(<var>n</var>) para todo <var>n</var> ≥ <var>n</var>₀. Por ejemplo, O(<var>n</var>) &lt;
+            O(<var>n</var> log <var>n</var>) &lt; O(<var>n</var>²). En las fórmulas, <var>V</var> es el número de vértices, <var>E</var> el de
+            aristas y <var>n</var> la cantidad de elementos de una lista.
           </p>
           <p>
-            Además del tiempo importan otras propiedades. Un ordenamiento es <strong>estable</strong> si dos elementos con la misma clave
-            conservan su orden relativo. Un algoritmo es <strong>voraz</strong> si en cada paso toma la mejor decisión local sin
-            reconsiderarla; Kruskal y Dijkstra son voraces y aun así garantizan el óptimo global.
+            Dos propiedades más aparecen en este proyecto: un ordenamiento es <strong>estable</strong> si dos elementos con la misma clave
+            conservan su orden relativo, y un algoritmo es <strong>voraz</strong> si en cada paso toma la mejor decisión local sin
+            reconsiderarla. Kruskal y Dijkstra son voraces y aun así garantizan el óptimo global.
           </p>
         </article>
 
         <article class="panel concepto" id="t-difusa">
-          <h3>4.2 Lógica difusa</h3>
+          <p class="concepto-num">4.5 · Algoritmo de la capa 1</p>
+          <h3>Lógica difusa</h3>
           <p>
             En la lógica clásica un elemento pertenece o no a un conjunto. Zadeh propuso los <strong>conjuntos difusos</strong>, donde la
-            pertenencia es un grado entre 0 y 1 dado por una función μ<sub>A</sub>: <var>X</var> → [0, 1] [7]. Así, un suelo con 35 % de
+            pertenencia es un grado entre 0 y 1 dado por una función μ<sub>A</sub>: <var>X</var> → [0, 1]. Así, un suelo con 35 % de
             humedad puede ser «seco» en grado 0,25 y «adecuado» en grado 0,25 al mismo tiempo. Una <strong>variable lingüística</strong>
             (humedad del suelo) toma valores lingüísticos (seca, adecuada, saturada), cada uno definido por una función de pertenencia.
           </p>
@@ -275,7 +384,7 @@
             trapmf(<var>x</var>; <var>a</var>, <var>b</var>, <var>c</var>, <var>d</var>) = máx(mín((<var>x</var>−<var>a</var>)/(<var>b</var>−<var>a</var>), 1, (<var>d</var>−<var>x</var>)/(<var>d</var>−<var>c</var>)), 0)
           </p>
           <p>
-            El <strong>sistema de inferencia Mamdani</strong> [8] transforma entradas numéricas en una salida numérica usando reglas del tipo
+            El <strong>sistema de inferencia Mamdani</strong> transforma entradas numéricas en una salida numérica usando reglas del tipo
             «SI la humedad es seca Y la lluvia es baja ENTONCES la urgencia es alta». Tiene cinco pasos:
           </p>
           <ol class="pasos">
@@ -291,14 +400,27 @@
             parcelas: O(<var>n</var>·<var>r</var>·<var>m</var>). Su ventaja es que no necesita datos históricos: el conocimiento está en las
             reglas, escritas a partir del criterio de un experto.
           </p>
+          <p>
+            Se usa la misma configuración que la pizarra de lógica difusa de Graphix y que el Fuzzy Logic Toolbox de MATLAB: funciones
+            trimf y trapmf, Y = mínimo, implicación mínimo, agregación máximo y centroide con 101 puntos. Por eso los resultados se pueden
+            comprobar con el script de MATLAB incluido en el proyecto.
+          </p>
         </article>
 
         <article class="panel concepto" id="t-merge">
-          <h3>4.3 Ordenamiento: Merge Sort</h3>
+          <p class="concepto-num">4.6 · Algoritmo de la capa 2</p>
+          <h3>Ordenamiento: Merge Sort</h3>
           <p>
-            Ordenar es reorganizar <var>n</var> elementos según una clave. Merge Sort aplica la estrategia <strong>divide y vencerás</strong>:
+            Ordenar es reorganizar <var>n</var> elementos según una clave. En la materia se estudiaron cuatro métodos:
+            <strong>Selección</strong> elige en cada pasada el menor (o mayor) elemento y lo lleva a su posición; <strong>Inserción</strong>
+            toma cada elemento y lo desliza hasta su lugar en la parte ya ordenada; <strong>Shell</strong> mejora la inserción comparando
+            elementos separados por un salto que se reduce hasta 1; y <strong>Merge Sort</strong> divide la lista por la mitad hasta tener
+            elementos sueltos y luego los mezcla ordenadamente.
+          </p>
+          <p>
+            Merge Sort aplica la estrategia <strong>divide y vencerás</strong>:
             divide la lista en dos mitades, ordena cada una de forma recursiva y luego las <strong>mezcla</strong> comparando el primer
-            elemento de cada mitad [6]. Su tiempo cumple la recurrencia
+            elemento de cada mitad. Su tiempo cumple la recurrencia
           </p>
           <p class="formula"><var>T</var>(<var>n</var>) = 2·<var>T</var>(<var>n</var>/2) + Θ(<var>n</var>) &nbsp;⇒&nbsp; <var>T</var>(<var>n</var>) = Θ(<var>n</var> log <var>n</var>)</p>
           <p>
@@ -314,8 +436,8 @@
 
 MEZCLAR(I, D)
   mientras I y D no estén vacíos:
-    si I[0] ≤ D[0]: mover I[0] al resultado     ← "≤" lo hace estable
-    si no:          mover D[0] al resultado
+    si I ≤ D: mover I al resultado     ← "≤" lo hace estable
+    si no:          mover D al resultado
   agregar lo que sobre de I o D</code></pre>
           <div class="tabla-scroll">
             <table class="tabla compacta">
@@ -332,7 +454,8 @@ MEZCLAR(I, D)
         </article>
 
         <article class="panel concepto" id="t-kruskal">
-          <h3>4.4 Grafos y árbol de expansión: Kruskal</h3>
+          <p class="concepto-num">4.7 · Algoritmo de la capa 3</p>
+          <h3>Árbol de expansión: Kruskal</h3>
           <p>
             Un <strong>grafo</strong> <var>G</var> = (<var>V</var>, <var>E</var>) es un conjunto de vértices unidos por aristas; si las aristas
             tienen un costo, el grafo es <strong>ponderado</strong>. Un <strong>árbol de expansión</strong> es un subconjunto de
@@ -340,7 +463,7 @@ MEZCLAR(I, D)
             es el de menor peso total.
           </p>
           <p>
-            Kruskal [9] construye el MST de forma voraz: ordena las aristas de menor a mayor peso y las agrega una por una, descartando las
+            Kruskal construye el MST de forma voraz: ordena las aristas de menor a mayor peso y las agrega una por una, descartando las
             que formarían un ciclo. Su corrección se basa en la <strong>propiedad del corte</strong>: la arista más liviana que cruza
             cualquier partición de los vértices pertenece a algún MST. Para detectar ciclos se usa la estructura <strong>Union-Find</strong>
             con compresión de caminos y unión por rango, cuyas operaciones cuestan O(α(<var>n</var>)), prácticamente constante.
@@ -356,7 +479,8 @@ MEZCLAR(I, D)
           <p>
             <strong>Complejidad:</strong> O(<var>E</var> log <var>E</var>), dominada por el ordenamiento. Si se ordena de mayor a menor se
             obtiene el <strong>árbol de expansión máximo</strong>, en el que el camino entre dos vértices es el de mayor «cuello de botella»:
-            su arista más débil es lo más fuerte posible. Es lo que se busca para drenar agua.
+            su arista más débil es lo más fuerte posible. Es lo que se busca para drenar agua. Igual que en la pizarra de Kruskal de
+            Graphix, el proyecto permite ambos objetivos: mínimo para el riego y máximo para el drenaje.
           </p>
           <p>
             Cuando solo hace falta conectar algunos vértices (las parcelas que necesitan agua), el problema exacto es el <strong>árbol de
@@ -366,10 +490,11 @@ MEZCLAR(I, D)
         </article>
 
         <article class="panel concepto" id="t-dijkstra">
-          <h3>4.5 Camino más corto: Dijkstra</h3>
+          <p class="concepto-num">4.8 · Algoritmo de emergencias</p>
+          <h3>Camino más corto: Dijkstra</h3>
           <p>
             El problema del camino más corto desde un origen <var>s</var> busca, para cada vértice <var>v</var>, la ruta de menor peso total
-            entre <var>s</var> y <var>v</var>. Dijkstra [10] lo resuelve de forma voraz: mantiene la distancia tentativa de cada vértice,
+            entre <var>s</var> y <var>v</var>. Dijkstra lo resuelve de forma voraz: mantiene la distancia tentativa de cada vértice,
             extrae siempre el vértice no visitado más cercano y <strong>relaja</strong> sus aristas, es decir, si
             dist[<var>u</var>] + <var>w</var>(<var>u</var>, <var>v</var>) &lt; dist[<var>v</var>], actualiza dist[<var>v</var>]. Solo es correcto
             si todos los pesos son <strong>no negativos</strong>.
@@ -384,7 +509,12 @@ MEZCLAR(I, D)
         dist[v] ← dist[u] + w(u, v);  previo[v] ← u
         INSERTAR(Q, (dist[v], v))
   devolver dist, previo</code></pre>
-          <p><strong>Complejidad:</strong> O((<var>V</var> + <var>E</var>) log <var>V</var>) con un montículo binario.</p>
+          <p>
+            <strong>Complejidad:</strong> buscando el mínimo con un recorrido lineal, como en la pizarra de Dijkstra de Graphix, cuesta
+            O(<var>V</var>² + <var>E</var>); con un <strong>montículo binario</strong>, como en este proyecto, cuesta
+            O((<var>V</var> + <var>E</var>) log <var>V</var>), mejor para grafos dispersos como el campo. En ambos casos la memoria es
+            O(<var>V</var> + <var>E</var>).
+          </p>
           <p class="aviso">
             <strong>Kruskal y Dijkstra optimizan cosas distintas.</strong> Kruskal minimiza el peso <em>total</em> de la red; Dijkstra minimiza
             la distancia <em>desde un origen</em>. La ruta entre la represa y una parcela dentro del MST no siempre es la más corta. En este
@@ -414,7 +544,7 @@ MEZCLAR(I, D)
         <header class="encabezado">
           <p class="capitulo-num">05</p>
           <h2>Aplicación <span class="acento">interactiva</span></h2>
-          <p>Elige una época del año. Toca cualquier parcela del mapa o de la tabla para ver cómo razonó la lógica difusa.</p>
+          <p>Elige una época del año: el planificador ejecuta los cuatro algoritmos juntos y, más abajo, puedes ver cada uno paso a paso en su pizarra.</p>
         </header>
 
         <div class="app-cabecera">
@@ -440,7 +570,14 @@ MEZCLAR(I, D)
           <div class="tabla-scroll"><table id="turnos" class="tabla"></table></div>
         </div>
 
-        <div class="bloque" id="detalle"></div>
+        <div class="bloque" id="pizarras">
+          <div class="bloque-cabecera">
+            <h3 class="h-bloque">Pizarras paso a paso</h3>
+            <p>Cada algoritmo del proyecto en su propia pizarra, como en Graphix, ejecutado sobre los datos de la época elegida. Toca una parcela del mapa o de la tabla para abrir su razonamiento difuso.</p>
+          </div>
+          <div class="pz-pestanas" id="pz-pestanas" role="tablist" aria-label="Algoritmo"></div>
+          <div id="pz-area"></div>
+        </div>
 
         <div class="bloque" id="analisis"></div>
       </section>
@@ -508,6 +645,7 @@ MEZCLAR(I, D)
           <li>Zadeh, L. A. (1965). Fuzzy sets. <em>Information and Control</em>, 8(3), 338–353.</li>
           <li>Mamdani, E. H. y Assilian, S. (1975). An experiment in linguistic synthesis with a fuzzy logic controller. <em>International Journal of Man-Machine Studies</em>, 7(1), 1–13.</li>
           <li>Kruskal, J. B. (1956). On the shortest spanning subtree of a graph and the traveling salesman problem. <em>Proceedings of the American Mathematical Society</em>, 7(1), 48–50.</li>
+          <li>Grupo pinguinos.exe (2026). <em>Graphix: simulador interactivo de grafos.</em> Repositorio del proyecto grupal de Análisis de Algoritmos. <a href="https://github.com/yudithNV/Grafos">github.com/yudithNV/Grafos</a></li>
           <li>Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. <em>Numerische Mathematik</em>, 1, 269–271.</li>
         </ol>
       </section>
@@ -517,18 +655,27 @@ MEZCLAR(I, D)
         <header class="encabezado">
           <h2>Quiénes <span class="acento">somos</span></h2>
           <p>
-            Este proyecto se realizó para aplicar los conocimientos adquiridos en la materia Análisis de Algoritmos: conceptualizar un
+            Trabajo individual realizado para aplicar los conocimientos adquiridos en la materia Análisis de Algoritmos: conceptualizar un
             problema real, elegir los algoritmos adecuados, implementarlos y analizar su complejidad.
           </p>
         </header>
-        <div class="rejilla tres">
-          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
-          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
-          <article class="tarjeta persona"><span class="avatar" aria-hidden="true">NA</span><h3>Nombre Apellido</h3><p>Integrante</p></article>
+        <div class="rejilla dos-personas">
+          <article class="tarjeta persona">
+            <span class="avatar" aria-hidden="true">JC</span>
+            <span class="etiqueta-tarjeta">Autor</span>
+            <h3>Jesus Miguel Carlier Fernandez</h3>
+            <p>Estudiante de Análisis de Algoritmos. Diseñó e implementó el sistema de riego y esta página.</p>
+          </article>
+          <article class="tarjeta persona">
+            <span class="avatar" aria-hidden="true">YC</span>
+            <span class="etiqueta-tarjeta">Docente</span>
+            <h3>Yamil Vicente Cardenas Miguel</h3>
+            <p>Docente de la materia Análisis de Algoritmos.</p>
+          </article>
         </div>
         <dl class="ficha">
           <div><dt>Materia</dt><dd>Análisis de Algoritmos</dd></div>
-          <div><dt>Docente</dt><dd>Nombre del docente</dd></div>
+          <div><dt>Modalidad</dt><dd>Trabajo individual</dd></div>
           <div><dt>Gestión</dt><dd>2026</dd></div>
         </dl>
       </section>
@@ -536,7 +683,7 @@ MEZCLAR(I, D)
 
     <footer class="pie">
       <a class="marca" href="#inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.6 4.9-6 8.3-6 11.2a6 6 0 0 0 12 0c0-2.9-2.4-6.3-6-11.2z" /></svg><span>Riego<b>.</b>inteligente</span></a>
-      <p>Proyecto de Análisis de Algoritmos, 2026. Los datos de la granja y del clima son ilustrativos.</p>
+      <p>Jesus Miguel Carlier Fernandez · Análisis de Algoritmos, 2026. Los datos de la granja y del clima son ilustrativos.</p>
     </footer>
 
     <script type="module" src="/src/main.js"></script>

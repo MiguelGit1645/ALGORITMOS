@@ -51,3 +51,10 @@ test('La poda quita ramas que no llevan a terminales', () => {
   const podado = podarArbol(arbol, ['A', 'C']);
   assert.deepEqual(podado.map((a) => a.id).sort(), ['AB', 'BC']);
 });
+
+test('Kruskal informa cada arista evaluada', () => {
+  const pasos = [];
+  const r = kruskal(nodos, aristas, { alPaso: (p) => pasos.push(p) });
+  assert.equal(pasos.filter((p) => p.aceptada).length, r.arbol.length);
+  assert.equal(pasos.at(-1).total, r.total);
+});

@@ -9,7 +9,9 @@ Página web del proyecto (fondo oscuro con acentos violeta, tema claro opcional)
 5. Aplicación interactiva
 6. Conclusiones, referencias y quiénes somos
 
-> Para completar: nombres de los integrantes y del docente en `index.html` (sección `quienes`).
+**Autor:** Jesus Miguel Carlier Fernandez · **Docente:** Yamil Vicente Cardenas Miguel · Trabajo individual.
+
+La sección de aplicación incluye **pizarras paso a paso** al estilo de Graphix (proyecto grupal de la materia) para los cuatro algoritmos usados: lógica difusa, Merge Sort, Kruskal y Dijkstra, con controles Atrás, Reproducir, Siguiente paso, Ejecutar todo, Reiniciar y Velocidad. Las pizarras ejecutan las mismas funciones del proyecto, que informan cada paso mediante un parámetro opcional `alPaso`.
 
 Proyecto de **Análisis de Algoritmos**. Sistema que, según la época del año, decide **a qué parcelas regar primero** y **por qué canales llevar el agua** con la menor pérdida posible.
 
@@ -74,6 +76,7 @@ ALGORITMOS/
 │   └── ui/                    ← interfaz
 │       ├── navegacion.js      (barra, menú desplegable y tema claro/oscuro)
 │       ├── documento.js       (figura 1 y tabla de resultados de las conclusiones)
+│       ├── pizarras/          (pizarras paso a paso: difusa, Merge Sort, Kruskal, Dijkstra)
 │       ├── grafo.js, paneles.js, analisis.js, formato.js
 ├── tests/                     ← pruebas de cada algoritmo
 └── matlab/sistema_riego.m     ← los mismos sistemas difusos para MATLAB

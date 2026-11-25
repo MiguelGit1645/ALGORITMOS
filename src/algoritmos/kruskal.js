@@ -18,9 +18,10 @@ import { UnionFind } from './unionFind.js';
  *
  * @param nodos    ids de los nodos
  * @param aristas  [{ id, desde, hasta, ... }]
- * @param opciones { peso: arista => número, maximo: boolean }
+ * @param opciones { peso: arista => número, maximo: boolean,
+ *                   alPaso: función opcional que recibe { arista, aceptada, total } (la usa la pizarra) }
  */
-export function kruskal(nodos, aristas, { peso = (a) => a.peso, maximo = false } = {}) {
+export function kruskal(nodos, aristas, { peso = (a) => a.peso, maximo = false, alPaso = null } = {}) {
   const stats = { comparaciones: 0 };
   const comparar = maximo ? (a, b) => peso(b) - peso(a) : (a, b) => peso(a) - peso(b);
   const ordenadas = mergeSort(aristas, comparar, stats);
@@ -32,12 +33,14 @@ export function kruskal(nodos, aristas, { peso = (a) => a.peso, maximo = false }
 
   for (const arista of ordenadas) {
     if (arbol.length === nodos.length - 1) break;
-    if (conjuntos.unir(arista.desde, arista.hasta)) {
+    const aceptada = conjuntos.unir(arista.desde, arista.hasta);
+    if (aceptada) {
       arbol.push(arista);
       total += peso(arista);
     } else {
       descartadas.push(arista);
     }
+    alPaso?.({ arista, aceptada, total });
   }
 
   return {

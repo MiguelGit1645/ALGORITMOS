@@ -55,3 +55,12 @@ test('Planificador: todas las parcelas con riego tienen turno y ruta', () => {
     }
   }
 });
+
+test('Dijkstra informa extracciones y relajaciones', () => {
+  const pasos = [];
+  const r = dijkstra(nodos, aristas, 'A', { alPaso: (p) => pasos.push(p) });
+  const extraidos = pasos.filter((p) => p.tipo === 'extraer');
+  assert.equal(extraidos.length, r.visitados);
+  assert.equal(extraidos[0].nodo, 'A');
+  for (const p of extraidos) assert.equal(p.distancia, r.distancia.get(p.nodo));
+});
