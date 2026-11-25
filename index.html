@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riego inteligente · Valle Alto de Cochabamba</title>
+    <meta name="description" content="Planificación de riego con lógica difusa, Merge Sort, Kruskal y Dijkstra." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="titulo">
+        <h1>Riego inteligente</h1>
+        <p>Granja de 12 parcelas en el Valle Alto de Cochabamba. Elige una época del año y el sistema decide a quién regar primero y por dónde llevar el agua.</p>
+      </div>
+      <nav class="epocas" id="epocas" aria-label="Época del año"></nav>
+    </header>
+
+    <main>
+      <section class="tablero">
+        <figure class="mapa">
+          <svg id="grafo" viewBox="0 0 860 540" role="img" aria-labelledby="grafo-titulo"></svg>
+          <figcaption id="leyenda" class="leyenda"></figcaption>
+        </figure>
+        <aside class="lateral">
+          <div id="resumen"></div>
+          <div id="emergencia"></div>
+        </aside>
+      </section>
+
+      <section class="bloque">
+        <div class="bloque-cabecera">
+          <h2>Orden de atención y turnos</h2>
+          <p id="explicacion-turnos"></p>
+        </div>
+        <div class="tabla-scroll"><table id="turnos" class="tabla"></table></div>
+      </section>
+
+      <section class="bloque" id="detalle"></section>
+
+      <section class="bloque" id="analisis"></section>
+    </main>
+
+    <footer class="pie">
+      Proyecto de Análisis de Algoritmos. Datos climáticos ilustrativos dentro de rangos típicos del valle; para datos reales, ver los resúmenes mensuales del SENAMHI.
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
