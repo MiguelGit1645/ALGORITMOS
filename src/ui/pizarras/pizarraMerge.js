@@ -22,7 +22,7 @@ export function crearPizarraMerge(contenedor) {
       <div class="pz-lienzo pz-pista"><div class="pz-columnas" data-columnas></div></div>
       <p class="pz-paso" data-paso aria-live="polite"></p>
       <ul class="pz-leyenda">
-        <li><i class="lg rango"></i>Sublista en proceso</li><li><i class="lg compara"></i>Comparando</li>
+        <li><i class="lg rango"></i>Mitad izquierda</li><li><i class="lg rango-der"></i>Mitad derecha</li><li><i class="lg compara"></i>Comparando</li>
         <li><i class="lg gana"></i>Va primero</li><li><i class="lg mezcla"></i>Recién mezclada</li>
       </ul>
     </div>`;
