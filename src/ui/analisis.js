@@ -54,7 +54,7 @@ function tablaResultados(filas) {
       return `<tr><td><strong>${f.nombre}</strong> <small>${f.teoria}</small></td>${celdas}</tr>`;
     })
     .join('');
-  return `<table class="tabla compacta"><thead><tr><th>Algoritmo</th>${cab}</tr></thead><tbody>${cuerpo}</tbody></table>`;
+  return `<div class="tabla-scroll"><table class="tabla compacta"><thead><tr><th>Algoritmo</th>${cab}</tr></thead><tbody>${cuerpo}</tbody></table></div>`;
 }
 
 export function pintarAnalisis(contenedor, r) {
@@ -64,6 +64,7 @@ export function pintarAnalisis(contenedor, r) {
       <h3 class="h-bloque">Análisis de los algoritmos</h3>
       <p>Complejidad teórica de cada capa y tiempo medido en este navegador para la granja actual.</p>
     </div>
+    <div class="tabla-scroll">
     <table class="tabla compacta complejidad">
       <thead><tr><th>Capa</th><th>Algoritmo</th><th>Complejidad</th><th>Variables</th><th class="n">Tiempo medido</th></tr></thead>
       <tbody>
@@ -73,6 +74,7 @@ export function pintarAnalisis(contenedor, r) {
         <tr><td>3. Emergencia</td><td>Dijkstra con montículo</td><td>O((V + E) log V)</td><td>V nodos, E canales</td><td class="n">${ms(t.dijkstra)}</td></tr>
       </tbody>
     </table>
+    </div>
     <p class="nota">Con solo ${r.parcelas.length} parcelas los tiempos son muy pequeños y varían entre ejecuciones (la primera incluye la compilación del navegador). La capa más costosa es la lógica difusa: evalúa ${r.parcelas.length} parcelas × ${SISTEMA_URGENCIA.reglas.length} reglas × 101 puntos. Para ver cómo crece cada algoritmo hay que aumentar n, como en la comparación de abajo.</p>
 
     <h4>¿Por qué Merge Sort? Comparación con los otros ordenamientos</h4>
